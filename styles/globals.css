@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .button {
+        @apply capitalize w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full transition-colors transition-shadow hover:shadow-lg md:py-4 md:text-lg md:px-10;
+    }
+
+    .button-primary {
+        @apply button text-gray-700 bg-white hover:text-indigo-700;
+    }
+
+    .button-secondary {
+        @apply button text-white bg-gray-700 hover:text-indigo-200;
+    }
+}
