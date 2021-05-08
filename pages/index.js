@@ -16,7 +16,7 @@ export default function Home() {
                 <main
                     className="flex justify-center items-center flex-1 max-w-7xl">
                     <div className="lg:max-w-2xl lg:w-full sm:text-center lg:text-left">
-                        <h1 className="text-4xl tracking-tight font-extrabold text-center text-white sm:text-5xl md:text-6xl">
+                        <h1 className="text-4xl tracking-tight font-bold text-center text-white sm:text-5xl md:text-6xl">
                             Your place to squabble
                         </h1>
                         <p className="mt-8 sm:mt-12 text-base text-center text-white sm:text-lg md:text-xl">

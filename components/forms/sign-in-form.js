@@ -3,8 +3,8 @@ import Link from "next/link"
 
 const SignInForm = () => {
     return (
-        <form className="mt-4 space-y-4" action="#" method="POST">
-            <div className="rounded-md shadow-sm space-y-2">
+        <form className="mt-4" action="#" method="POST">
+            <div className="rounded-md shadow-sm">
                 <div>
                     <label htmlFor="email-address" className="text-xs font-medium text-gray-400 uppercase">
                         Email address
@@ -19,7 +19,7 @@ const SignInForm = () => {
                         placeholder="Email address"
                     />
                 </div>
-                <div>
+                <div className={"mt-2"}>
                     <label htmlFor="password" className="text-xs font-medium text-gray-400 uppercase">
                         Password
                     </label>
@@ -35,7 +35,7 @@ const SignInForm = () => {
                 </div>
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="mt-2 flex items-center justify-between">
                 <div className="flex items-center">
                     <input
                         id="remember_me"
@@ -49,7 +49,7 @@ const SignInForm = () => {
                 </div>
 
                 <div className="text-sm">
-                    <a href="#" className="font-medium text-indigo-400 hover:text-indigo-500">
+                    <a href="#" className="text-indigo-400 hover:text-indigo-500">
                         Forgot your password?
                     </a>
                 </div>
@@ -58,7 +58,7 @@ const SignInForm = () => {
             <div>
                 <button
                     type="submit"
-                    className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="mt-4 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
               <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                 <LockClosedIcon className="h-5 w-5 text-indigo-400 group-hover:text-indigo-500" aria-hidden="true" />
@@ -67,7 +67,7 @@ const SignInForm = () => {
                 </button>
             </div>
 
-            <p className={"text-gray-400 text-sm"}>Need an account? <Link href={"/identity/sign-up"}><a className={"text-indigo-400"}>Register</a></Link></p>
+            <p className={"mt-4 text-gray-400 text-sm"}>Need an account? <Link href={"/identity/sign-up"}><a className={"text-indigo-400"}>Register</a></Link></p>
         </form>
     )
 }
