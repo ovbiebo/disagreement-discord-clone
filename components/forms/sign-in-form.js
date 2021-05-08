@@ -3,11 +3,10 @@ import Link from "next/link"
 
 const SignInForm = () => {
     return (
-        <form className="mt-2 space-y-6" action="#" method="POST">
-            <input type="hidden" name="remember" defaultValue="true" />
-            <div className="rounded-md shadow-sm -space-y-px">
+        <form className="mt-4 space-y-4" action="#" method="POST">
+            <div className="rounded-md shadow-sm space-y-2">
                 <div>
-                    <label htmlFor="email-address" className="sr-only">
+                    <label htmlFor="email-address" className="text-xs font-medium text-gray-400 uppercase">
                         Email address
                     </label>
                     <input
@@ -16,12 +15,12 @@ const SignInForm = () => {
                         type="email"
                         autoComplete="email"
                         required
-                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                        className="appearance-none mt-1 relative bg-gray-800 block w-full px-3 py-2 border border-gray-900 placeholder-gray-500 text-yellow-100 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                         placeholder="Email address"
                     />
                 </div>
                 <div>
-                    <label htmlFor="password" className="sr-only">
+                    <label htmlFor="password" className="text-xs font-medium text-gray-400 uppercase">
                         Password
                     </label>
                     <input
@@ -30,7 +29,7 @@ const SignInForm = () => {
                         type="password"
                         autoComplete="current-password"
                         required
-                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                        className="appearance-none mt-1 bg-gray-800 block w-full px-3 py-2 border border-gray-900 placeholder-gray-500 text-yellow-100 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                         placeholder="Password"
                     />
                 </div>
@@ -50,7 +49,7 @@ const SignInForm = () => {
                 </div>
 
                 <div className="text-sm">
-                    <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                    <a href="#" className="font-medium text-indigo-400 hover:text-indigo-500">
                         Forgot your password?
                     </a>
                 </div>
@@ -68,7 +67,7 @@ const SignInForm = () => {
                 </button>
             </div>
 
-            <p className={"text-gray-400"}>Need an account? <Link href={"/identity/sign-up"}><a className={"text-indigo-400"}>Register</a></Link></p>
+            <p className={"text-gray-400 text-sm"}>Need an account? <Link href={"/identity/sign-up"}><a className={"text-indigo-400"}>Register</a></Link></p>
         </form>
     )
 }

@@ -4,14 +4,13 @@ import Link from "next/link";
 
 export default function SignIn() {
     return (
-        <>
+        <div className={"relative flex justify-center sm:justify-start"}>
             <Head>
                 <title>Sign In</title>
             </Head>
-            <img className="absolute -z-10 h-full w-full object-cover" src={"/auth-backdrop.jpg"} alt=""/>
-            <div className={"sm:hidden bg-gray-700 absolute -z-10 h-full w-full"}/>
+            <img className="hidden sm:block absolute -z-10 h-full w-full object-cover" src={"/auth-backdrop.jpg"} alt=""/>
             <Link href="/">
-                <a className={"absolute pt-6 pl-6"}>
+                <a className={"absolute pt-6 sm:pl-6"}>
                     <svg width="124" height="34" viewBox="0 0 124 34" xmlns="http://www.w3.org/2000/svg">
                         <g fill="white">
                             <path
@@ -22,15 +21,15 @@ export default function SignIn() {
                     </svg>
                 </a>
             </Link>
-            <div className="flex items-center justify-center h-screen w-full mx-auto px-4">
-                <div className={"flex flex-col max-w-lg w-full bg-gray-700 sm:p-8 rounded-md"}>
-                    <h2 className="mt-2 text-center text-white text-3xl font-extrabold">Welcome back!</h2>
+            <div className="flex items-center justify-center h-screen w-full mx-auto">
+                <div className={"flex flex-col justify-center sm:max-w-lg w-full h-full sm:h-auto bg-gray-700 px-4 sm:p-8 sm:rounded-md"}>
+                    <h2 className="mt-2 text-center tracking-tight text-white text-2xl sm:text-3xl font-medium">Welcome back!</h2>
                     <p className="mt-2 text-center text-sm text-gray-400">
                         We're so excited to see you again
                     </p>
                     <SigninForm/>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
