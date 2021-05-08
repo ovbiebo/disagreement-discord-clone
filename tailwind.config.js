@@ -8,6 +8,9 @@ module.exports = {
       fontFamily: {
         'sans': ['Jost', 'sans-serif'],
       },
+      zIndex: {
+        '-10': '-10',
+      }
     }
   },
   variants: {

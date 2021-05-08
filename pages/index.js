@@ -12,9 +12,7 @@ export default function Home() {
             </Head>
             <div
                 className="flex flex-col z-10 relative max-w-screen-xl h-full mx-auto overflow-hidden px-4 sm:px-6 lg:px-8">
-
                 <NavBar/>
-
                 <main
                     className="flex justify-center items-center flex-1 max-w-7xl">
                     <div className="lg:max-w-2xl lg:w-full sm:text-center lg:text-left">
@@ -28,10 +26,10 @@ export default function Home() {
                         </p>
                         <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-center">
                             <div className={"rounded-full"}>
-                                <LinkButton name={"Sign In"} url={"#"} style={"button-primary"}/>
+                                <LinkButton name={"Sign In"} url={"/identity/sign-in"} style={"button-primary"}/>
                             </div>
                             <div className={"mt-3 sm:mt-0 sm:ml-3"}>
-                                <LinkButton name={"Sign Up"} url={"#"} style={"button-secondary"}/>
+                                <LinkButton name={"Sign Up"} url={"/identity/sign-in"} style={"button-secondary"}/>
                             </div>
                         </div>
                     </div>
