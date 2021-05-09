@@ -2,22 +2,30 @@ import {LockClosedIcon} from '@heroicons/react/solid'
 import Link from "next/link"
 import {Dropdown} from "../inputs/dropdown";
 import TextField from "../inputs/text-field";
+import {useRouter} from "next/router";
+import {signUp} from "../../data-sources/user";
 
 const SignInForm = () => {
+    const router = useRouter()
+
+    const submitForm = async (e) => {
+        e.preventDefault();
+        try {
+            await signUp(e.target.email.value, e.target.password.value)
+            await router.push("/app")
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     return (
-        <form className="mt-4" action="#" method="POST">
+        <form className="mt-4" action="#" method="POST" onSubmit={submitForm}>
             <div className="rounded-md shadow-sm">
                 <div>
                     <label htmlFor="email-address" className="text-xs font-medium text-gray-400 uppercase">
                         Email address
                     </label>
                     <TextField type={"email"} required/>
-                </div>
-                <div className={"mt-2"}>
-                    <label htmlFor="username" className="text-xs font-medium text-gray-400 uppercase">
-                        Username
-                    </label>
-                    <TextField type={"username"} required/>
                 </div>
                 <div className={"mt-2"}>
                     <label htmlFor="password" className="text-xs font-medium text-gray-400 uppercase">

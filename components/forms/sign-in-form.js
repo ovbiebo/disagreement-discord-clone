@@ -1,37 +1,37 @@
-import { LockClosedIcon } from '@heroicons/react/solid'
+import {LockClosedIcon} from '@heroicons/react/solid'
 import Link from "next/link"
+import {useRouter} from "next/router";
+import TextField from "../inputs/text-field";
+import {signIn} from "../../data-sources/user";
+import firebase from "../../firebase/clientApp";
 
 const SignInForm = () => {
+    const router = useRouter()
+
+    const submitForm = async (e) => {
+        e.preventDefault();
+        try {
+            await signIn(e.target.email.value, e.target.password.value)
+            await router.push("/app")
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     return (
-        <form className="mt-4" action="#" method="POST">
+        <form className="mt-4" action="#" method="POST" onSubmit={submitForm}>
             <div className="rounded-md shadow-sm">
                 <div>
-                    <label htmlFor="email-address" className="text-xs font-medium text-gray-400 uppercase">
+                    <label htmlFor="email" className="text-xs font-medium text-gray-400 uppercase">
                         Email address
                     </label>
-                    <input
-                        id="email-address"
-                        name="email"
-                        type="email"
-                        autoComplete="email"
-                        required
-                        className="appearance-none mt-1 relative bg-gray-800 block w-full px-3 py-2 border border-gray-900 placeholder-gray-500 text-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                        placeholder="Email address"
-                    />
+                    <TextField type={"email"} placeholder={"Email address"} required/>
                 </div>
                 <div className={"mt-2"}>
                     <label htmlFor="password" className="text-xs font-medium text-gray-400 uppercase">
                         Password
                     </label>
-                    <input
-                        id="password"
-                        name="password"
-                        type="password"
-                        autoComplete="current-password"
-                        required
-                        className="appearance-none mt-1 bg-gray-800 block w-full px-3 py-2 border border-gray-900 placeholder-gray-500 text-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                        placeholder="Password"
-                    />
+                    <TextField type={"password"} placeholder={"Password"} required/>
                 </div>
             </div>
 
@@ -61,13 +61,14 @@ const SignInForm = () => {
                     className="mt-4 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
               <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                <LockClosedIcon className="h-5 w-5 text-indigo-400 group-hover:text-indigo-500" aria-hidden="true" />
+                <LockClosedIcon className="h-5 w-5 text-indigo-400 group-hover:text-indigo-500" aria-hidden="true"/>
               </span>
                     Sign in
                 </button>
             </div>
 
-            <p className={"mt-4 text-gray-400 text-sm"}>Need an account? <Link href={"/identity/sign-up"}><a className={"text-indigo-400"}>Register</a></Link></p>
+            <p className={"mt-4 text-gray-400 text-sm"}>Need an account? <Link href={"/identity/sign-up"}><a
+                className={"text-indigo-400"}>Register</a></Link></p>
         </form>
     )
 }

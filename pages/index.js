@@ -29,7 +29,7 @@ export default function Home() {
                                 <LinkButton name={"Sign In"} url={"/identity/sign-in"} style={"button-primary"}/>
                             </div>
                             <div className={"mt-3 sm:mt-0 sm:ml-3"}>
-                                <LinkButton name={"Sign Up"} url={"/identity/sign-in"} style={"button-secondary"}/>
+                                <LinkButton name={"Sign Up"} url={"/identity/sign-up"} style={"button-secondary"}/>
                             </div>
                         </div>
                     </div>

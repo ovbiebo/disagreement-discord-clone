@@ -24,9 +24,10 @@ const NavBar = ({menuItems}) => {
                         </Link>
                         <nav className={"hidden md:block md:flex col-span-4 justify-center space-x-8"}>
                             {menuItems.map((item) => (
-                                <Link href={item.href}>
-                                    <a key={item.name}
-                                       className="font-medium text-white">
+                                <Link key={item.name} href={item.href}>
+                                    <a
+                                        className="font-medium text-white"
+                                    >
                                         {item.name}
                                     </a>
                                 </Link>
@@ -78,9 +79,8 @@ const NavBar = ({menuItems}) => {
                                     </div>
                                     <div className="px-2 pt-2 pb-3 space-y-1">
                                         {menuItems.map((item) => (
-                                            <Link href={item.href}>
+                                            <Link key={item.name} href={item.href}>
                                                 <a
-                                                    key={item.name}
                                                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                                                 >
                                                     {item.name}
