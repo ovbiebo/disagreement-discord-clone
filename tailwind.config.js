@@ -11,10 +11,18 @@ module.exports = {
             zIndex: {
                 '-10': '-10',
             },
+            transitionProperty: {
+                'roundness': 'border-radius',
+            },
+            width: {
+                '84': '21rem'
+            }
         }
     },
     variants: {
-        extend: {}
+        extend: {
+            borderRadius: ['hover'],
+        }
     },
     plugins: []
 }

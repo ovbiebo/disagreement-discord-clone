@@ -21,10 +21,6 @@
         scroll-snap-align: start;
     }
 
-    .scroll-ml-84 {
-        scroll-margin-left: 21rem;
-    }
-
     .scroll-snap-x {
         scroll-snap-type: x mandatory;
     }
@@ -39,4 +35,8 @@
         width: 0;
         height: 0;
     }
+}
+
+html, body, #__next {
+    height: 100%;
 }

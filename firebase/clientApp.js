@@ -13,7 +13,7 @@ const clientCredentials = {
 
 if (!firebase.apps.length) {
   firebase.initializeApp(clientCredentials)
-  console.info("firebase client initialized")
+  // console.info("firebase client initialized")
 }
 
 export default firebase

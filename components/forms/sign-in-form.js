@@ -3,7 +3,6 @@ import Link from "next/link"
 import {useRouter} from "next/router";
 import TextField from "../inputs/text-field";
 import {signIn} from "../../data-sources/user";
-import firebase from "../../firebase/clientApp";
 
 const SignInForm = () => {
     const router = useRouter()

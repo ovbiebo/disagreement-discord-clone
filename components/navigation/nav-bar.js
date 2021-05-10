@@ -34,7 +34,7 @@ const NavBar = ({menuItems}) => {
                             ))}
                         </nav>
                         <LinkButton style={"button-primary py-1 px-4 w-max"} name={"Open App"}
-                                    url={"/identity/sign-in"}/>
+                                    url={"/app"}/>
                         <div className="-mr-2 flex items-center md:hidden">
                             <Popover.Button
                                 className="rounded-md p-2 inline-flex items-center justify-center text-white focus:outline-none">
@@ -88,7 +88,7 @@ const NavBar = ({menuItems}) => {
                                             </Link>
                                         ))}
                                     </div>
-                                    <Link href="/">
+                                    <Link href="/identity/sign-in">
                                         <a
                                             className="block w-full px-5 py-3 text-center font-medium text-indigo-600 bg-gray-50 hover:bg-gray-100"
                                         >
