@@ -1,13 +1,13 @@
 import '../styles/globals.css';
 import UserProvider from '../state/userContext';
-import {ServerProvider} from "../state/server-context";
+import {ChannelProvider} from "../state/channelContext";
 
 function MyApp({Component, pageProps}) {
     return (
         <UserProvider>
-            <ServerProvider>
+            <ChannelProvider>
                 <Component {...pageProps} />
-            </ServerProvider>
+            </ChannelProvider>
         </UserProvider>
     )
 }

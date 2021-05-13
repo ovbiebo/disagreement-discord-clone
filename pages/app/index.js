@@ -1,4 +1,5 @@
-import {ServersList} from "../../components/server";
+import {ChannelsList} from "../../components/channelsList";
+import {RoomsList} from "../../components/roomsList";
 
 function App() {
     return (
@@ -6,9 +7,11 @@ function App() {
             <section className={"scroll-snap-start flex-shrink-0 w-84"}>
                 <div className={"fixed left-0 flex h-full w-full"}>
                     <nav className={"w-20 bg-gray-900 h-full"}>
-                        <ServersList/>
+                        <ChannelsList/>
                     </nav>
-                    <div className={"w-64 bg-gray-800 h-full"}/>
+                    <div className={"w-64 bg-gray-800 h-full"}>
+                        <RoomsList/>
+                    </div>
                 </div>
             </section>
             <section className={"scroll-snap-start z-20 w-screen bg-gray-700 flex-shrink-0 lg:flex-1"}>
