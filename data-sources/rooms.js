@@ -14,7 +14,7 @@ async function getRoomsForChannel(channelId) {
             // doc.data() is never undefined for query doc snapshots
             roomCollection.push({id: doc.id, ...doc.data()})
         });
-        if (!roomCollection) {
+        if (roomCollection.length <= 0) {
             return null
         }
         return roomCollection

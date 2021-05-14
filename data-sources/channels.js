@@ -9,7 +9,7 @@ async function getChannels() {
             // doc.data() is never undefined for query doc snapshots
             channelCollection.push({id: doc.id, ...doc.data()})
         });
-        if (!channelCollection) {
+        if (channelCollection.length <= 0) {
             return null
         }
         return channelCollection

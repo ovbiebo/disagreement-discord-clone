@@ -1,5 +1,6 @@
-import {ChannelsList} from "../../components/channelsList";
+import {ChannelsList} from "../../components/channelsList/channelsList";
 import {RoomsList} from "../../components/roomsList";
+import {Messages} from "../../components/messages/messages";
 
 function App() {
     return (
@@ -15,7 +16,7 @@ function App() {
                 </div>
             </section>
             <section className={"scroll-snap-start z-20 w-screen bg-gray-700 flex-shrink-0 lg:flex-1"}>
-
+                <Messages/>
             </section>
             <section className={"scroll-snap-start z-10 flex-shrink-0 w-72 bg-gray-800"}>
 

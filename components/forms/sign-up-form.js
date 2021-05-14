@@ -1,7 +1,7 @@
 import {LockClosedIcon} from '@heroicons/react/solid'
 import Link from "next/link"
-import {Dropdown} from "../inputs/dropdown";
-import TextField from "../inputs/text-field";
+import {Dropdown} from "../common/inputs/dropdown";
+import TextField from "../common/inputs/text-field";
 import {useRouter} from "next/router";
 import {signUp} from "../../data-sources/user";
 

@@ -1,7 +1,7 @@
 import {LockClosedIcon} from '@heroicons/react/solid'
 import Link from "next/link"
 import {useRouter} from "next/router";
-import TextField from "../inputs/text-field";
+import TextField from "../common/inputs/text-field";
 import {signIn} from "../../data-sources/user";
 
 const SignInForm = () => {
