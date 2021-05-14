@@ -1,6 +1,6 @@
 import {useContext, useEffect} from "react";
 import {channelContext} from "../state/channelContext";
-import {getRoomsForChannel} from "../data-sources/rooms";
+import {getRoomsForChannel} from "../data-sources/fetchers/rooms";
 import {useStatefulXHR} from "../utils/xhr/useStatefulXHR";
 import {roomContext} from "../state/roomContext";
 

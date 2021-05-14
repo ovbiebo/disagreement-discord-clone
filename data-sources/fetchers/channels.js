@@ -1,4 +1,4 @@
-import firebase from '../firebase/clientApp'
+import firebase from '../../firebase/clientApp'
 
 async function getChannels() {
     const db = firebase.firestore()

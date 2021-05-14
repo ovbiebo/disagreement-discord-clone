@@ -2,7 +2,7 @@ import {useContext, useEffect} from "react";
 import {channelContext} from "../../state/channelContext";
 import {ChannelsListLoaded, ChannelsListLoading} from "./channelsListLoaded";
 import {useStatefulXHR} from "../../utils/xhr/useStatefulXHR";
-import {getChannels} from "../../data-sources/channels";
+import {getChannels} from "../../data-sources/fetchers/channels";
 
 function ChannelsList() {
     const {setCurrentChannel} = useContext(channelContext)

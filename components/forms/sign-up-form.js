@@ -3,7 +3,7 @@ import Link from "next/link"
 import {Dropdown} from "../common/inputs/dropdown";
 import TextField from "../common/inputs/text-field";
 import {useRouter} from "next/router";
-import {signUp} from "../../data-sources/user";
+import {signUp} from "../../data-sources/fetchers/user";
 
 const SignInForm = () => {
     const router = useRouter()

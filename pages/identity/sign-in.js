@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function SignIn() {
     return (
-        <div className={"relative flex justify-center sm:justify-start"}>
+        <div className={"relative h-full flex justify-center sm:justify-start"}>
             <Head>
                 <title>Sign In</title>
             </Head>
@@ -21,7 +21,7 @@ export default function SignIn() {
                     </svg>
                 </a>
             </Link>
-            <div className="flex items-center justify-center h-screen w-full mx-auto">
+            <div className="flex items-center justify-center h-full w-full mx-auto">
                 <div className={"flex flex-col justify-center sm:max-w-lg w-full h-full sm:h-auto bg-gray-700 px-4 sm:p-8 sm:rounded-md"}>
                     <h2 className="mt-2 text-center tracking-tight text-white text-3xl font-medium">Welcome back!</h2>
                     <p className="mt-2 text-center text-sm text-gray-400">

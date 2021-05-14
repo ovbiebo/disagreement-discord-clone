@@ -1,5 +1,5 @@
 import {useContext} from "react";
-import {useMessages} from "../../data-sources/observable/messages";
+import {useMessages} from "../../data-sources/subscribers/messages";
 import {roomContext} from "../../state/roomContext";
 
 function Messages() {

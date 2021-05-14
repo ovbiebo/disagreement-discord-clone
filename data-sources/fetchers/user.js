@@ -1,4 +1,4 @@
-import firebase from '../firebase/clientApp'
+import firebase from '../../firebase/clientApp'
 
 const signIn = async (email, password) => {
     return firebase.auth().signInWithEmailAndPassword(email, password)
