@@ -17,7 +17,7 @@ function ChannelsListLoaded({channels}) {
                         onClick={() => setCurrentChannel(channel)}
                     >
                         <div
-                            className={`bg-white absolute transition-all opacity-0 left-0 w-0 h-0
+                            className={`bg-white absolute transition-custom opacity-0 left-0 w-0 h-0
                             ${
                                 (hoveredChannel === channel) && "-left-1 w-2 h-6 opacity-100"
                             }
@@ -30,7 +30,7 @@ function ChannelsListLoaded({channels}) {
                             src={channel.imageURL}
                             width={52}
                             height={52}
-                            className={`bg-gray-600 transition-roundness ${(hoveredChannel === channel || currentChannel === channel) ? "rounded-2xl" : "rounded-4xl"}`}
+                            className={`bg-gray-600 transition-roundness ease-in-out duration-200 ${(hoveredChannel === channel || currentChannel === channel) ? "rounded-2xl" : "rounded-4xl"}`}
                         />
                     </div>
                 )

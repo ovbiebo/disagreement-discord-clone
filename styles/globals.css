@@ -35,6 +35,12 @@
         width: 0;
         height: 0;
     }
+
+    .transition-custom {
+        transition-property: width, height, left, opacity;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 200ms;
+    }
 }
 
 html, body, #__next {
