@@ -1,20 +1,25 @@
-import {ChannelsList} from "../../components/channelsList/channelsList";
-import {RoomsList} from "../../components/roomsList";
+import {ServersList} from "../../components/serversList/serversList";
+import {ChannelsList} from "../../components/channelsList";
 import {Messages} from "../../components/messages/messages";
 import {User} from "../../components/user/user";
 import {UsersList} from "../../components/usersList/usersList";
+import Head from "next/head";
 
 function App() {
     return (
         <div className={"relative bg-gray-700 overflow-x-scroll scroll-hidden h-full flex scroll-snap-x"}>
+            <Head>
+                <meta name="viewport"
+                      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+            </Head>
             <section className={"scroll-snap-start flex-shrink-0 w-84"}>
                 <div className={"fixed left-0 flex h-full w-full"}>
                     <nav className={"w-20 bg-gray-900 h-full"}>
-                        <ChannelsList/>
+                        <ServersList/>
                     </nav>
                     <div className={"w-64 bg-gray-800 h-full flex flex-col"}>
                         <div className={"flex-1"}>
-                            <RoomsList/>
+                            <ChannelsList/>
                         </div>
                         <User/>
                     </div>

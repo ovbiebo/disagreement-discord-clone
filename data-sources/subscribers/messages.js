@@ -1,17 +1,17 @@
 import firebase from '../../firebase/clientApp'
-import {roomContext} from "../../state/roomContext";
+import {channelContext} from "../../state/channelContext";
 import {useContext, useEffect, useState} from "react";
 
 function useMessages() {
-    const {currentRoom} = useContext(roomContext)
+    const {currentChannel} = useContext(channelContext)
     const [messages, setMessages] = useState(null)
     const [messagesError, setMessagesError] = useState(false)
 
     useEffect(() => {
-        if (currentRoom) {
+        if (currentChannel) {
             let messagesCollection = [];
             const unsubscriber = firebase.firestore().collection('messages')
-                .where("roomId", "==", `${currentRoom.id}`)
+                .where("channelId", "==", `${currentChannel.id}`)
                 .onSnapshot(async (messages) => {
                     try {
                         messages.forEach((doc) => {
@@ -30,7 +30,7 @@ function useMessages() {
 
             return () => unsubscriber()
         }
-    }, [currentRoom])
+    }, [currentChannel])
 
     return {messages, messagesError}
 }

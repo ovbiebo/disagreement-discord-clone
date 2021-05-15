@@ -1,16 +1,16 @@
 import '../styles/globals.css';
 import UserProvider from '../state/userContext';
+import {ServerProvider} from "../state/serverContext";
 import {ChannelProvider} from "../state/channelContext";
-import {RoomProvider} from "../state/roomContext";
 
 function MyApp({Component, pageProps}) {
     return (
         <UserProvider>
-            <ChannelProvider>
-                <RoomProvider>
+            <ServerProvider>
+                <ChannelProvider>
                     <Component {...pageProps} />
-                </RoomProvider>
-            </ChannelProvider>
+                </ChannelProvider>
+            </ServerProvider>
         </UserProvider>
     )
 }
