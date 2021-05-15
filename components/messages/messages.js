@@ -11,7 +11,7 @@ function Messages() {
     return (
         <div>
             <div
-                className={"w-full h-12 flex items-center border-b font-medium text-md border-gray-800 px-4 py-3 text-white"}>{
+                className={"w-full h-12 flex items-center border-b font-medium text-lg border-gray-800 px-4 py-3 text-white"}>{
                 currentRoom
                     ? <div className={"flex"}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="gray">

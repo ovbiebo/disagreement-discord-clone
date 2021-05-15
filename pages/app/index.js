@@ -2,6 +2,7 @@ import {ChannelsList} from "../../components/channelsList/channelsList";
 import {RoomsList} from "../../components/roomsList";
 import {Messages} from "../../components/messages/messages";
 import {User} from "../../components/user/user";
+import {UsersList} from "../../components/usersList/usersList";
 
 function App() {
     return (
@@ -23,10 +24,9 @@ function App() {
                 <Messages/>
             </section>
             <section className={"scroll-snap-start z-10 flex-shrink-0 w-72 bg-gray-800"}>
-
+                <UsersList/>
             </section>
         </div>
     );
 }
-
 export default App
