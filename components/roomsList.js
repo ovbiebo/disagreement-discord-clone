@@ -22,22 +22,28 @@ function RoomsList() {
     const loading = !rooms && !roomsError
 
     return (
-        <div>
-            <div className={"w-full h-12 flex items-center border-b font-medium text-md border-gray-900 px-4 py-3 text-white"}>{
-                currentChannel
-                    ? <div>{currentChannel.name}</div>
-                    : <div className="animate-pulse h-4 bg-gray-700 rounded w-full"/>
-            }</div>
-            {roomsError && <div>Error fetching rooms</div>}
-            {loading && <div>loading...</div>}
-            {rooms && rooms.map((room) => {
-                return (
-                    <div key={room.id} className={"pt-4 px-4 w-full"}>
-                        <div>{room.name}</div>
-                    </div>
-                )
-            })}
-        </div>
+        <>
+            <div
+                className={"w-full h-12 flex items-center border-b font-medium text-lg border-gray-900 px-4 py-3 text-white"}
+            >
+                {
+                    currentChannel
+                        ? <div>{currentChannel.name}</div>
+                        : <div className="animate-pulse h-4 bg-gray-700 rounded-full w-full"/>
+                }
+            </div>
+            <div className={"p-4"}>
+                {roomsError && <div>Error fetching rooms</div>}
+                {loading && <div className="animate-pulse h-4 bg-gray-700 rounded-full w-full"/>}
+                {rooms && rooms.map((room) => {
+                    return (
+                        <div key={room.id} className={"pb-2 w-full"}>
+                            <div>{room.name}</div>
+                        </div>
+                    )
+                })}
+            </div>
+        </>
     )
 }
 

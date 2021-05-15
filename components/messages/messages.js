@@ -19,7 +19,7 @@ function Messages() {
                         </svg>
                         {currentRoom.name}
                     </div>
-                    : <div className="animate-pulse h-4 bg-gray-600 rounded w-full max-w-xl"/>
+                    : <div className="animate-pulse h-4 bg-gray-600 rounded-full w-full max-w-xl"/>
             }</div>
             {messagesError && <div>Error fetching rooms</div>}
             {loading && <div>loading...</div>}

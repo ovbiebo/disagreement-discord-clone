@@ -15,7 +15,14 @@ module.exports = {
                 'roundness': 'border-radius',
             },
             width: {
+                '13': '3.25rem',
                 '84': '21rem'
+            },
+            height: {
+                '13': '3.25rem'
+            },
+            borderRadius: {
+                '4xl': '2rem',
             }
         }
     },

@@ -1,6 +1,7 @@
 import {ChannelsList} from "../../components/channelsList/channelsList";
 import {RoomsList} from "../../components/roomsList";
 import {Messages} from "../../components/messages/messages";
+import {User} from "../../components/user/user";
 
 function App() {
     return (
@@ -10,8 +11,11 @@ function App() {
                     <nav className={"w-20 bg-gray-900 h-full"}>
                         <ChannelsList/>
                     </nav>
-                    <div className={"w-64 bg-gray-800 h-full"}>
-                        <RoomsList/>
+                    <div className={"w-64 bg-gray-800 h-full flex flex-col"}>
+                        <div className={"flex-1"}>
+                            <RoomsList/>
+                        </div>
+                        <User/>
                     </div>
                 </div>
             </section>
