@@ -26,18 +26,18 @@ function ChannelsList() {
     return (
         <>
             <div
-                className={"w-full h-12 flex items-center border-b font-medium text-lg border-gray-900 px-4 py-3 text-white"}
+                className={"w-full h-12 flex items-center border-b border-gray-900 px-4 py-3 text-white"}
             >
                 {
                     currentServer
                         ? <div className={"flex w-full items-center"}>
-                            <div className={"flex-1"}>{currentServer.name}</div>
+                            <h3 className={"flex-1 text-lg font-medium"}>{currentServer.name}</h3>
                             <PlusIcon className="h-6 w-6 stroke-current text-gray-400"/>
                         </div>
                         : <div className="animate-pulse h-4 bg-gray-700 rounded-full w-full"/>
                 }
             </div>
-            <div className={"p-4"}>
+            <div className={"py-4 px-2"}>
                 {channelsError && <div>Error fetching channels</div>}
                 {loading && <ChannelsListLoading/>}
                 {channels && <ChannelsListLoaded channels={channels}/>}

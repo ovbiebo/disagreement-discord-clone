@@ -1,7 +1,7 @@
 import {useContext, useMemo} from "react";
 import {channelContext} from "../../state/channelContext";
 import {Disclosure} from "@headlessui/react";
-import {ChevronDownIcon} from "@heroicons/react/outline";
+import {ChevronDownIcon, HashtagIcon} from "@heroicons/react/outline";
 
 function ChannelsListLoaded({channels}) {
     const {currentChannel, setCurrentChannel} = useContext(channelContext)
@@ -16,11 +16,7 @@ function ChannelsListLoaded({channels}) {
                         {category: channels[index].category, channels: []}
                     )
                 }
-                categorizedList[currentCategoryIndex].channels.push(
-                    <div key={channel.id} className="pb-2 pl-6 w-full" onClick={() => setCurrentChannel(channel)}>
-                        {channel.name}
-                    </div>
-                )
+                categorizedList[currentCategoryIndex].channels.push(channel)
             })
             return categorizedList
         } else {
@@ -29,21 +25,30 @@ function ChannelsListLoaded({channels}) {
     }, [channels])
 
     return (
-        <div>
+        <>
             {
                 categories && categories.map((category) =>
-                    <Disclosure key={category.category}>
-                        <Disclosure.Button className={"flex w-full mb-3 h-4 items-center text-gray-400 cursor-pointer"}>
+                    <Disclosure key={category.category} as={"div"} className={"mb-6 text-gray-400"}>
+                        <Disclosure.Button className={"flex w-full mb-2 h-4 items-center focus:outline-none"}>
                             <ChevronDownIcon className={"mr-1 h-4 w-4 stroke-current "}/>
-                            <div className={"text-gray-400 uppercase font-medium text-xs"}>{category.category}</div>
+                            <div className={"text-gray-400 uppercase font-medium text-sm"}>{category.category}</div>
                         </Disclosure.Button>
-                        <Disclosure.Panel className="text-gray-400">
-                            {category.channels}
+                        <Disclosure.Panel>
+                            {category.channels.map((channel) => (
+                                <div
+                                    key={channel.id}
+                                    className={`${(currentChannel === channel) && "text-white bg-gray-700"} flex items-center mb-1 pl-4 h-8 rounded-md cursor-pointer w-full hover:bg-gray-700 hover:text-white`}
+                                    onClick={() => setCurrentChannel(channel)}
+                                >
+                                    <HashtagIcon className={"w-5 h-5 mr-1"}/>
+                                    {channel.name}
+                                </div>
+                            ))}
                         </Disclosure.Panel>
                     </Disclosure>
                 )
             }
-        </div>
+        </>
     )
 }
 
@@ -54,7 +59,7 @@ function ChannelsListLoading({dummyCount = 12}) {
                 [...Array(dummyCount)].map((dummy, index) => {
                     return (
                         <div key={index}
-                             className={`${(index % 4 !== 0) && "self-end"} animate-pulse h-4 bg-gray-700 w-11/12 rounded-full mb-3`}/>
+                             className={`${(index % 4 !== 0) && "self-end"} animate-pulse h-4 bg-gray-700 w-11/12 rounded-full mb-4`}/>
                     )
                 })
             }
