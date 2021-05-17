@@ -11,6 +11,7 @@ function App() {
             <Head>
                 <meta name="viewport"
                       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+                <title>Disagreement</title>
             </Head>
             <section className={"scroll-snap-start flex-shrink-0 w-84"}>
                 <div className={"fixed left-0 flex h-full w-full"}>

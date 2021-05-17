@@ -33,8 +33,7 @@ function ChannelsListLoaded({channels}) {
             {
                 categories && categories.map((category) =>
                     <Disclosure key={category.category}>
-                        <Disclosure.Button as={"div"}
-                                           className={"flex w-full mb-3 h-4 items-center text-gray-400 cursor-pointer"}>
+                        <Disclosure.Button className={"flex w-full mb-3 h-4 items-center text-gray-400 cursor-pointer"}>
                             <ChevronDownIcon className={"mr-1 h-4 w-4 stroke-current "}/>
                             <div className={"text-gray-400 uppercase font-medium text-xs"}>{category.category}</div>
                         </Disclosure.Button>
