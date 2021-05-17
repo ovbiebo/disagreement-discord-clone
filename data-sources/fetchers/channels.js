@@ -1,6 +1,6 @@
 import firebase from '../../firebase/clientApp'
 
-async function getChannelsForServer(serverId) {
+async function getChannels(serverId) {
     const db = firebase.firestore()
     try {
         let channelCollection = [];
@@ -8,7 +8,7 @@ async function getChannelsForServer(serverId) {
         const channelQuerySnapshot =
             await db
                 .collection('channels')
-                .where("serverId", "==", `${serverId}`)
+                .where("serverId", "==", `${serverId}`).orderBy('category', 'asc')
                 .get()
         channelQuerySnapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
@@ -23,4 +23,4 @@ async function getChannelsForServer(serverId) {
     }
 }
 
-export {getChannelsForServer}
+export {getChannels}

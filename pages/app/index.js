@@ -1,5 +1,5 @@
 import {ServersList} from "../../components/serversList/serversList";
-import {ChannelsList} from "../../components/channelsList";
+import {ChannelsList} from "../../components/channelsList/channelsList";
 import {Messages} from "../../components/messages/messages";
 import {User} from "../../components/user/user";
 import {UsersList} from "../../components/usersList/usersList";
