@@ -8,6 +8,7 @@ function useMessages() {
     const [messagesError, setMessagesError] = useState(false)
 
     useEffect(() => {
+        setMessages(null)
         if (currentChannel) {
             const unsubscriber = firebase.firestore()
                 .collection('messages')

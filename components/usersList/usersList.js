@@ -6,6 +6,8 @@ import {UsersListLoaded, UsersListLoading} from "./usersListViews";
 function UsersList() {
     const {makeRequest, data: users, error: usersError} = useStatefulXHR();
 
+    console.log(users)
+
     useEffect(() => {
         makeRequest(getAllUsers).then()
     }, [])

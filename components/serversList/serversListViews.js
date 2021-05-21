@@ -2,13 +2,13 @@ import {useContext, useState} from "react";
 import Image from "next/image"
 import {serverContext} from "../../state/serverContext";
 
-function ServersListViews({channels}) {
+function ServersListViews({servers}) {
     const {currentServer, setCurrentServer} = useContext(serverContext)
     const [hoveredServer, setHoveredServer] = useState(null)
 
     return (
         <div className={"py-2"} onMouseLeave={() => setHoveredServer(null)}>
-            {channels.map((server) => {
+            {servers.map((server) => {
                 return (
                     <div
                         key={server.id}

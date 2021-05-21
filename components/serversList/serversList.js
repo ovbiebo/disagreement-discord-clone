@@ -19,7 +19,7 @@ function ServersList() {
     return (
         <>
             {(!servers && !serversError) && <ServersListLoading/>}
-            {servers && <ServersListViews channels={servers}/>}
+            {servers && <ServersListViews servers={servers}/>}
         </>
     )
 }

@@ -18,7 +18,7 @@ function ChannelsList() {
     }, [currentServer])
 
     useEffect(() => {
-        channels && setCurrentChannel(channels[0])
+        channels ? setCurrentChannel(channels[0]) : setCurrentChannel(null)
     }, [channels])
 
     const loading = !channels && !channelsError
