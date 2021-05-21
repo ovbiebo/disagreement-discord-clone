@@ -15,9 +15,10 @@ function Messages() {
 
     const loading = !messages && !messagesError
 
-    function submitMessage(e){
+    function submitMessage(e) {
         e.preventDefault()
-        sendMessage(e.target.message.value, currentChannel.id, user.uid).then()
+        e.target.message.value && sendMessage(e.target.message.value, currentChannel.id, user.uid).then()
+        e.target.reset();
     }
 
     return (
