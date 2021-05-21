@@ -31,13 +31,13 @@ function ChannelsListLoaded({channels}) {
                     <Disclosure key={category.category} as={"div"} className={"mb-6 text-gray-400"}>
                         <Disclosure.Button className={"flex w-full mb-2 h-4 items-center focus:outline-none"}>
                             <ChevronDownIcon className={"mr-1 h-4 w-4 stroke-current "}/>
-                            <div className={"text-gray-400 uppercase font-medium text-sm"}>{category.category}</div>
+                            <div className={"text-gray-400 uppercase font-medium text-xs"}>{category.category}</div>
                         </Disclosure.Button>
                         <Disclosure.Panel>
                             {category.channels.map((channel) => (
                                 <div
                                     key={channel.id}
-                                    className={`${(currentChannel === channel) && "text-white bg-gray-700"} flex items-center mb-1 pl-4 h-8 rounded-md cursor-pointer w-full hover:bg-gray-700 hover:text-white`}
+                                    className={`${(currentChannel === channel) && "text-white font-medium bg-gray-700"} flex items-center mb-1 pl-4 h-10 rounded-md cursor-pointer w-full hover:bg-gray-700 hover:text-white`}
                                     onClick={() => setCurrentChannel(channel)}
                                 >
                                     <HashtagIcon className={"w-5 h-5 mr-1"}/>

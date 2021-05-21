@@ -11,7 +11,7 @@ function App() {
     return (
         <ServerProvider>
             <ChannelProvider>
-                <div className={"relative bg-gray-700 overflow-x-scroll scroll-hidden h-full flex scroll-snap-x"}>
+                <div className={"bg-gray-700 overflow-x-scroll scroll-hidden h-full flex scroll-snap-x"}>
                     <Head>
                         <meta name="viewport"
                               content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -30,11 +30,13 @@ function App() {
                             </div>
                         </div>
                     </section>
-                    <section className={"scroll-snap-start z-20 w-screen bg-gray-700 flex-shrink-0 lg:flex-1"}>
+                    <section className={"scroll-snap-start h-full z-20 w-screen bg-gray-700 flex-shrink-0 lg:flex-1"}>
                         <Messages/>
                     </section>
-                    <section className={"scroll-snap-start z-10 flex-shrink-0 w-72 bg-gray-800"}>
-                        <UsersList/>
+                    <section className={"scroll-snap-start overflow-hidden h-full bg-white flex-shrink-0 w-72"}>
+                        <div className={"bg-gray-800 w-72 h-full sticky right-0"}>
+                            <UsersList/>
+                        </div>
                     </section>
                 </div>
             </ChannelProvider>

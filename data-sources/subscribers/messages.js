@@ -9,10 +9,12 @@ function useMessages() {
 
     useEffect(() => {
         if (currentChannel) {
-            let messagesCollection = [];
-            const unsubscriber = firebase.firestore().collection('messages')
+            const unsubscriber = firebase.firestore()
+                .collection('messages')
                 .where("channelId", "==", `${currentChannel.id}`)
+                .orderBy("sentAt", "asc")
                 .onSnapshot(async (messages) => {
+                    let messagesCollection = [];
                     try {
                         messages.forEach((doc) => {
                             // doc.data() is never undefined for query doc snapshots
