@@ -13,7 +13,7 @@ function ChannelsList() {
 
     useEffect(() => {
         if (currentServer) {
-            makeRequest(() => getChannels(currentServer.id)).then()
+            makeRequest(() => getChannels(currentServer.id), currentServer.id).then()
         }
     }, [currentServer])
 

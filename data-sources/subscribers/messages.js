@@ -1,14 +1,16 @@
 import firebase from '../../firebase/clientApp'
 import {channelContext} from "../../state/channelContext";
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 
 function useMessages() {
     const {currentChannel} = useContext(channelContext)
     const [messages, setMessages] = useState(null)
     const [messagesError, setMessagesError] = useState(false)
 
+    const cache = useRef({})
+
     useEffect(() => {
-        setMessages(null)
+        setMessages((currentChannel && currentChannel.id in cache.current) ? cache.current[currentChannel.id] : null)
         if (currentChannel) {
             const unsubscriber = firebase.firestore()
                 .collection('messages')
@@ -24,6 +26,7 @@ function useMessages() {
                         if (messagesCollection.length <= 0) {
                             setMessages([])
                         } else {
+                            currentChannel && (cache.current[currentChannel.id] = messagesCollection)
                             setMessages(messagesCollection)
                         }
                     } catch (error) {

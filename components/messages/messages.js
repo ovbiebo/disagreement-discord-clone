@@ -26,7 +26,7 @@ function Messages() {
             <div
                 className={"w-full h-12 flex items-center border-b font-medium text-lg border-gray-800 px-4 py-3 text-white"}
             >
-                <MenuIcon className={"w-6 h-6 mr-2 text-gray-300"}/>
+                <MenuIcon className={"w-6 h-6 mr-2 text-gray-300 lg:hidden"}/>
                 {
                     currentChannel
                         ? <div className={"flex flex-1 items-center"}>
@@ -35,7 +35,7 @@ function Messages() {
                         </div>
                         : <div className="animate-pulse h-4 bg-gray-600 rounded-full w-full max-w-xl"/>
                 }
-                <UserGroupIcon className={"w-6 h-6 text-gray-300"}/>
+                <UserGroupIcon className={"w-6 h-6 text-gray-300 lg:hidden"}/>
             </div>
             <div className={"p-4 pb-0 overflow-y-auto flex-1"}>
                 {messagesError && <div>Error loading messages</div>}

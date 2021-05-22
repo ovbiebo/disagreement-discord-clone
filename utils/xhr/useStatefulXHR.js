@@ -48,13 +48,14 @@ export const useStatefulXHR = () => {
         {data: null, error: null}
     )
 
-    const cache = useRef(null)
+    const cache = useRef({})
 
-    const makeRequest = async (fetcher) => {
-        dispatch(fetchStart(cache.current))
+    const makeRequest = async (fetcher, cacheKey = null) => {
+        dispatch(fetchStart((cacheKey && cacheKey in cache.current) ? cache.current[cacheKey] : null))
         try {
             const response = await fetcher()
             dispatch(fetchSuccess(response))
+            cacheKey && (cache.current[cacheKey] = response)
         } catch (error) {
             dispatch(fetchFail(error))
         }
