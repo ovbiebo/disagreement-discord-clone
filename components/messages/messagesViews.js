@@ -1,10 +1,26 @@
+import Image from "next/image"
+
 function MessagesLoaded({messages}) {
     return (
         <>
             {messages && messages.map((message) => {
                 return (
-                    <div key={message.id} className={"mb-4 w-full"}>
-                        <div>{message.body}</div>
+                    <div key={message.id} className={"mb-6 w-full flex"}>
+                        <div className={"h-11 mr-4"}>
+                            <Image
+                                src={message.senderImageURL}
+                                width={44}
+                                height={44}
+                                className={"bg-gray-600 rounded-full"}
+                            />
+                        </div>
+                        <div className={"flex-1"}>
+                            <div className={"flex"}>
+                                <p className={"mr-2 text-sm font-medium"}>{message.senderName}</p>
+                                <p className={"text-gray-400 text-xs"}>{message.sentAt.toDate().toISOString().split('T')[0]}</p>
+                            </div>
+                            <div className={"text-gray-200"}>{message.body}</div>
+                        </div>
                     </div>
                 )
             })}
@@ -18,14 +34,14 @@ function MessagesLoading({dummyCount = 10}) {
             {
                 [...Array(dummyCount)].map((dummy, index) => {
                     return (
-                        <div key={index} className={"flex mb-4 animate-pulse"}>
+                        <div key={index} className={"flex mb-6 animate-pulse"}>
                             <div
-                                className={"bg-gray-600 w-13 h-13 rounded-full mr-2"}
+                                className={"bg-gray-600 w-11 h-11 rounded-full mr-4"}
                             />
                             <div className={"flex-1"}>
-                                <div className={`h-4 bg-gray-600 w-1/4 rounded-full mb-4`}/>
-                                <div className={`h-4 bg-gray-600 w-3/4 rounded-full mb-4`}/>
-                                <div className={`h-4 bg-gray-600 w-2/4 rounded-full mb-4`}/>
+                                <div className={`h-4 bg-gray-600 w-1/4 rounded-full mb-2`}/>
+                                <div className={`h-4 bg-gray-600 w-3/4 rounded-full mb-2`}/>
+                                <div className={`h-4 bg-gray-600 w-2/4 rounded-full mb-2`}/>
                             </div>
                         </div>
                     )

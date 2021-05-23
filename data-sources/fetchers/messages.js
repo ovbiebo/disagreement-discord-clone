@@ -1,13 +1,14 @@
 import firebase from '../../firebase/clientApp'
 
-async function sendMessage(body, channelId, senderId) {
+async function sendMessage(body, channelId, senderName, senderImageURL) {
     const db = firebase.firestore()
     try {
         await db.collection("messages").add({
             body,
             channelId,
-            senderId,
-            sentAt: firebase.firestore.Timestamp.fromDate(new Date())
+            senderName,
+            senderImageURL,
+            sentAt: firebase.firestore.Timestamp.now()
         })
     } catch (error) {
         throw error.message
