@@ -18,7 +18,7 @@ function App() {
                         <title>Disagreement</title>
                     </Head>
                     <section className={"scroll-snap-start flex-shrink-0 w-84"}>
-                        <div className={"fixed left-0 flex h-full w-full"}>
+                        <div className={"absolute left-0 flex h-full w-full"}>
                             <nav className={"w-20 bg-gray-900 h-full"}>
                                 <ServersList/>
                             </nav>
@@ -30,14 +30,16 @@ function App() {
                             </div>
                         </div>
                     </section>
-                    <section className={"scroll-snap-start h-full z-20 w-screen bg-gray-700 flex-shrink-0 lg:flex-1"}>
-                        <Messages/>
-                    </section>
-                    <section className={"scroll-snap-start overflow-hidden h-full bg-white flex-shrink-0 w-72"}>
-                        <div className={"bg-gray-800 w-72 h-full sticky right-0"}>
+                    <div className={"h-full relative z-10 messages-users-container flex-shrink-0 lg:flex-shrink flex"}>
+                        <section
+                            className={"scroll-snap-start h-full z-20 bg-gray-700 lg:flex-1"}>
+                            <Messages/>
+                        </section>
+                        <section className={"h-full bg-gray-800 sticky right-0 w-72 flex-shrink-0"}>
                             <UsersList/>
-                        </div>
-                    </section>
+                        </section>
+                        <div className={"absolute lg:hidden right-0 scroll-snap-start w-72"}/>
+                    </div>
                 </div>
             </ChannelProvider>
         </ServerProvider>
