@@ -50,4 +50,5 @@
 html, body, #__next {
     height: 100%;
     color: white;
+    @apply bg-gray-700
 }

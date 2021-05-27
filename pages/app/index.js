@@ -18,7 +18,7 @@ function App() {
                         <title>Disagreement</title>
                     </Head>
                     <section className={"scroll-snap-start flex-shrink-0 w-84"}>
-                        <div className={"absolute left-0 flex h-full w-full"}>
+                        <div className={"fixed left-0 flex h-full w-full"}>
                             <nav className={"w-20 bg-gray-900 h-full"}>
                                 <ServersList/>
                             </nav>
@@ -30,9 +30,9 @@ function App() {
                             </div>
                         </div>
                     </section>
-                    <div className={"h-full relative z-10 messages-users-container flex-shrink-0 lg:flex-shrink flex"}>
+                    <div className={"scroll-snap-start h-full relative messages-users-container flex-shrink-0 lg:flex-1 flex"}>
                         <section
-                            className={"scroll-snap-start h-full z-20 bg-gray-700 lg:flex-1"}>
+                            className={"h-full z-20 w-screen lg:w-auto bg-gray-700 lg:flex-1"}>
                             <Messages/>
                         </section>
                         <section className={"h-full bg-gray-800 sticky right-0 w-72 flex-shrink-0"}>

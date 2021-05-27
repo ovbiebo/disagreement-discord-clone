@@ -1,6 +1,6 @@
 import {useContext, useEffect} from "react";
 import {serverContext} from "../../state/serverContext";
-import {ServersListViews, ServersListLoading} from "./serversListViews";
+import {ServersListLoaded, ServersListLoading} from "./serversListLoaded";
 import {useStatefulXHR} from "../../utils/xhr/useStatefulXHR";
 import {getServers} from "../../data-sources/fetchers/servers";
 
@@ -19,7 +19,7 @@ function ServersList() {
     return (
         <>
             {(!servers && !serversError) && <ServersListLoading/>}
-            {servers && <ServersListViews servers={servers}/>}
+            {servers && <ServersListLoaded servers={servers}/>}
         </>
     )
 }

@@ -2,7 +2,7 @@ import {useContext, useState} from "react";
 import Image from "next/image"
 import {serverContext} from "../../state/serverContext";
 
-function ServersListViews({servers}) {
+function ServersListLoaded({servers}) {
     const {currentServer, setCurrentServer} = useContext(serverContext)
     const [hoveredServer, setHoveredServer] = useState(null)
 
@@ -57,4 +57,4 @@ function ServersListLoading({dummyCount = 3}) {
     )
 }
 
-export {ServersListViews, ServersListLoading}
+export {ServersListLoaded, ServersListLoading}
