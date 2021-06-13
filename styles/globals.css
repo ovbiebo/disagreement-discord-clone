@@ -18,6 +18,10 @@
     .messages-users-container {
         width: calc(100% + theme('width.72'));
     }
+
+    .servers-messages-container {
+        width: calc(100% + theme('width.72') + theme('width.84'));
+    }
 }
 
 @layer utilities {
