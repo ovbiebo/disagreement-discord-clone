@@ -1,27 +1,28 @@
 import {useContext, useEffect} from "react";
 import {serverContext} from "../../state/serverContext";
-import {getChannels} from "../../data-sources/fetchers/channels";
-import {useStatefulXHR} from "../../utils/xhr/useStatefulXHR";
+import {createChannel} from "../../data-sources/fetchers/channels";
 import {channelContext} from "../../state/channelContext";
-import {PlusIcon} from "@heroicons/react/outline";
 import {ChannelsListLoaded, ChannelsListLoading} from "./channelsListViews";
+import {useChannels} from "../../data-sources/subscribers/channels";
 
 function ChannelsList() {
     const {currentServer} = useContext(serverContext)
     const {setCurrentChannel} = useContext(channelContext)
-    const {makeRequest, data: channels, error: channelsError} = useStatefulXHR()
+    const {channels, channelsError} = useChannels()
 
-    useEffect(() => {
-        if (currentServer) {
-            makeRequest(() => getChannels(currentServer.id), currentServer.id).then()
-        }
-    }, [currentServer])
+    const loading = !channels && !channelsError
 
     useEffect(() => {
         channels ? setCurrentChannel(channels[0]) : setCurrentChannel(null)
     }, [channels])
 
-    const loading = !channels && !channelsError
+    async function addChannel({name, category, isVoiceChannel, serverId}) {
+        try {
+            await createChannel(name, category, isVoiceChannel, serverId)
+        } catch (e) {
+
+        }
+    }
 
     return (
         <>
@@ -32,7 +33,6 @@ function ChannelsList() {
                     currentServer
                         ? <div className={"flex w-full items-center"}>
                             <h3 className={"flex-1 text-lg font-medium"}>{currentServer.name}</h3>
-                            <PlusIcon className="h-6 w-6 stroke-current text-gray-400"/>
                         </div>
                         : <div className="animate-pulse h-4 bg-gray-700 rounded-full w-full"/>
                 }
@@ -40,7 +40,12 @@ function ChannelsList() {
             <div className={"py-4 px-2"}>
                 {channelsError && <div>Error fetching channels</div>}
                 {loading && <ChannelsListLoading/>}
-                {channels && <ChannelsListLoaded channels={channels}/>}
+                {channels && <ChannelsListLoaded
+                    channels={channels}
+                    addChannel={
+                        (channelDetails) => addChannel(channelDetails)
+                    }
+                />}
             </div>
         </>
     )
