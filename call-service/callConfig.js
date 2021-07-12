@@ -8,4 +8,4 @@ export const servers = {
 };
 
 // Global State
-export const peerConnection = new RTCPeerConnection(servers);
+export const peerConnection = (typeof window === 'undefined') ? null : new RTCPeerConnection(servers);
