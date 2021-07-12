@@ -1,9 +1,12 @@
 import {useContext, useMemo} from "react";
 import {channelContext} from "../../state/channelContext";
 import {Disclosure} from "@headlessui/react";
-import {ChevronDownIcon, HashtagIcon} from "@heroicons/react/outline";
+import {ChevronDownIcon, HashtagIcon, PlusIcon} from "@heroicons/react/outline";
+import {VolumeUpIcon} from "@heroicons/react/solid";
+import {startCall} from "../../state/call/callActions";
+import {callContext} from "../../state/call/callContext";
 
-function ChannelsListLoaded({channels}) {
+function ChannelsListLoaded({channels, addChannel}) {
     const {currentChannel, setCurrentChannel} = useContext(channelContext)
     const categories = useMemo(() => {
         if (channels && channels.length > 0) {
@@ -28,35 +31,54 @@ function ChannelsListLoaded({channels}) {
         <>
             {
                 categories && categories.map((category) =>
-                    <Disclosure key={category.category} as={"div"} className={"mb-6 text-gray-400"}>
+                    <Disclosure key={category.category} as={"div"} className={"mb-5 text-gray-400"}>
                         {({open}) => (
                             <>
-                                <Disclosure.Button className={"flex w-full mb-2 h-4 items-center focus:outline-none"}>
-                                    <ChevronDownIcon
-                                        className={`transition-transform mr-1 h-3 w-3 stroke-current ${!open && "transform -rotate-90"}`}/>
-                                    <div
-                                        className={"text-gray-400 uppercase font-medium text-xs"}>{category.category}</div>
-                                </Disclosure.Button>
+                                <div className={"flex items-center mb-2 hover:text-white"}>
+                                    <Disclosure.Button
+                                        className={"flex flex-1 w-full h-4 items-center focus:outline-none"}>
+                                        <ChevronDownIcon
+                                            className={`transition-transform mr-1 h-3 w-3 stroke-current ${!open && "transform -rotate-90"}`}/>
+                                        <div
+                                            className={"text-current uppercase font-medium text-xs"}>{category.category}</div>
+                                    </Disclosure.Button>
+                                    <PlusIcon
+                                        className={`h-5 w-5 stroke-current`}
+                                        onClick={() => addChannel({
+                                            name: "New Channel",
+                                            category: category.category,
+                                            serverId: currentChannel.serverId,
+                                            isVoiceChannel: true
+                                        })}
+                                    />
+                                </div>
                                 <Disclosure.Panel>
                                     {category.channels.map((channel) => (
-                                        <div
-                                            key={channel.id}
-                                            className={`${(currentChannel === channel) && "text-white font-medium bg-gray-700"} flex items-center mb-1 pl-4 h-10 rounded-md cursor-pointer w-full hover:bg-gray-700 hover:text-white`}
-                                            onClick={() => setCurrentChannel(channel)}
-                                        >
-                                            <HashtagIcon className={"w-5 h-5 mr-1"}/>
-                                            {channel.name}
-                                        </div>
-                                    ))}
+                                            channel.isVoiceChannel
+                                                ? <VoiceChannelListItem key={channel.id} channel={channel}/>
+                                                : <div
+                                                    key={channel.id}
+                                                    className={`${(currentChannel === channel) && "text-white bg-gray-700"} flex items-center mb-1 pl-4 h-8 rounded-md cursor-pointer w-full hover:bg-gray-700 hover:text-white`}
+                                                    onClick={() => setCurrentChannel(channel)}
+                                                >
+                                                    <HashtagIcon className={"w-5 h-5 mr-1"}/>
+                                                    {channel.name}
+                                                </div>
+                                        )
+                                    )}
                                 </Disclosure.Panel>
                                 {
                                     (!open && currentChannel && category.category === currentChannel.category) &&
-                                    <div
-                                        className={`text-white font-medium bg-gray-700 flex items-center mb-1 pl-4 h-10 rounded-md cursor-pointer w-full hover:bg-gray-700 hover:text-white`}
-                                    >
-                                        <HashtagIcon className={"w-5 h-5 mr-1"}/>
-                                        {currentChannel.name}
-                                    </div>
+                                    (
+                                        currentChannel.isVoiceChannel
+                                            ? <VoiceChannelListItem channel={currentChannel}/>
+                                            : <div
+                                                className={`text-white bg-gray-700 flex items-center mb-1 pl-4 h-8 rounded-md cursor-pointer w-full hover:bg-gray-700 hover:text-white`}
+                                            >
+                                                <HashtagIcon className={"w-5 h-5 mr-1"}/>
+                                                {currentChannel.name}
+                                            </div>
+                                    )
                                 }
                             </>
                         )}
@@ -67,7 +89,25 @@ function ChannelsListLoaded({channels}) {
     )
 }
 
-function ChannelsListLoading({dummyCount = 12}) {
+function VoiceChannelListItem({channel}) {
+    const [state, dispatch] = useContext(callContext)
+
+    return (
+        <div
+            className={`${(state.channelId === channel) && "text-white bg-gray-700"} flex items-center mb-1 pl-4 h-8 rounded-md cursor-pointer w-full hover:bg-gray-700 hover:text-white`}
+            onClick={() => dispatch(startCall(channel.id))}
+        >
+            <VolumeUpIcon className={"w-4 h-4 mr-2"}/>
+            {channel.name}
+        </div>
+    )
+}
+
+function ChannelsListLoading(
+    {
+        dummyCount = 12
+    }
+) {
     return (
         <div className={"flex flex-col"}>
             {
@@ -82,4 +122,7 @@ function ChannelsListLoading({dummyCount = 12}) {
     )
 }
 
-export {ChannelsListLoaded, ChannelsListLoading}
+export
+{
+    ChannelsListLoaded, ChannelsListLoading
+}
