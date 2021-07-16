@@ -1,3 +1,5 @@
+import {io} from "socket.io-client";
+
 export const servers = {
     iceServers: [
         {
@@ -9,3 +11,5 @@ export const servers = {
 
 // Global State
 export const peerConnection = (typeof window === 'undefined') ? null : new RTCPeerConnection(servers);
+
+export const socket = io(process.env.RTC_SERVICE_URL)
