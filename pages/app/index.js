@@ -7,6 +7,8 @@ import Head from "next/head";
 import {ServerProvider} from "../../state/serverContext";
 import {ChannelProvider} from "../../state/channelContext";
 import {CallProvider} from "../../state/call/callContext";
+import {CallStatusBar} from "../../components/call/callStatusBar";
+import {MiniVideoCallWidget} from "../../components/call/miniVideoCallWidget";
 
 function App() {
     return (
@@ -19,6 +21,7 @@ function App() {
             <ServerProvider>
                 <ChannelProvider>
                     <CallProvider>
+                        <MiniVideoCallWidget/>
                         <div
                             className={"relative bg-gray-700 overflow-x-scroll scroll-hidden h-full flex scroll-snap-x"}>
                             <div className={"absolute scroll-snap-start lg:hidden left-0 scroll-snap-start w-84"}/>
@@ -31,6 +34,7 @@ function App() {
                                         <div className={"flex-1"}>
                                             <ChannelsList/>
                                         </div>
+                                        <CallStatusBar/>
                                         <User/>
                                     </div>
                                 </div>

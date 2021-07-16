@@ -1,10 +1,12 @@
-import {useContext, useMemo} from "react";
+import {useContext, useEffect, useMemo} from "react";
 import {channelContext} from "../../state/channelContext";
 import {Disclosure} from "@headlessui/react";
 import {ChevronDownIcon, HashtagIcon, PlusIcon} from "@heroicons/react/outline";
 import {VolumeUpIcon} from "@heroicons/react/solid";
-import {startCall} from "../../state/call/callActions";
+import {joinCall} from "../../state/call/callActions";
 import {callContext} from "../../state/call/callContext";
+import {useUser} from "../../state/userContext";
+import Image from "next/image";
 
 function ChannelsListLoaded({channels, addChannel}) {
     const {currentChannel, setCurrentChannel} = useContext(channelContext)
@@ -91,15 +93,26 @@ function ChannelsListLoaded({channels, addChannel}) {
 
 function VoiceChannelListItem({channel}) {
     const [state, dispatch] = useContext(callContext)
+    const {user} = useUser();
 
     return (
-        <div
-            className={`${(state.channelId === channel) && "text-white bg-gray-700"} flex items-center mb-1 pl-4 h-8 rounded-md cursor-pointer w-full hover:bg-gray-700 hover:text-white`}
-            onClick={() => dispatch(startCall(channel.id))}
-        >
-            <VolumeUpIcon className={"w-4 h-4 mr-2"}/>
-            {channel.name}
-        </div>
+        <>
+            <div
+                className={`${(state.channelId === channel) && "text-white bg-gray-700"} flex items-center mb-1 pl-4 h-8 rounded-md cursor-pointer w-full hover:bg-gray-700 hover:text-white`}
+                onClick={() => dispatch(
+                    joinCall(channel.id, {name: user.displayName, imageURL: user.photoURL})
+                )}
+            >
+                <VolumeUpIcon className={"w-4 h-4 mr-2"}/>
+                {channel.name}
+            </div>
+            {(channel.participants && (channel.participants.length > 0)) && channel.participants.map((participant, index) => {
+                return <div key={index} className={"flex items-center mb-3 ml-10 pr-4"}>
+                    <Image width={24} height={24} src={participant.participantImageURL} className={"rounded-full"}/>
+                    <p className={"ml-2 truncate"}>{participant.participantName}</p>
+                </div>
+            })}
+        </>
     )
 }
 

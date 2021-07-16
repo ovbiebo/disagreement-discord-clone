@@ -5,7 +5,7 @@ function User() {
     const {user} = useUser()
 
     return (
-        <div className={"flex items-center p-3 bg-gray-900"}>
+        <div className={"flex items-center py-3 px-2 bg-gray-900"}>
             {
                 user
                     ? <Image width={40} height={40} src={user.photoURL || "/"} className={"rounded-full bg-gray-700"}/>
