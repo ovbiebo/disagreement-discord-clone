@@ -12,4 +12,4 @@ export const servers = {
 // Global State
 export const peerConnection = (typeof window === 'undefined') ? null : new RTCPeerConnection(servers);
 
-export const socket = io(process.env.RTC_SERVICE_URL)
+export const socket = io(process.env.NEXT_PUBLIC_RTC_SERVICE_URL)
