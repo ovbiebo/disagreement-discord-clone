@@ -25,95 +25,80 @@ function CallProvider({children}) {
     const [state, dispatch] = useReducer(callReducer, callState)
 
     useEffect(() => {
-        if (state.channelId) {
-            // SOCKET EVENT CALLBACKS =====================================================
-            socket.on('room_created', async () => {
-                console.log('Socket event callback: room_created')
+        // SOCKET EVENT CALLBACKS
+        socket.on('room_created', async () => {
+            console.log('Socket event callback: room_created')
 
-                state.isCaller = true
-                setLocalStream(state.mediaConstraints, dispatch).then()
-            })
+            state.isCaller = true
+            await setLocalStream(state.mediaConstraints, dispatch).then()
+        })
 
-            socket.on('room_joined', async () => {
-                console.log('Socket event callback: room_joined')
+        socket.on('room_joined', async () => {
+            console.log('Socket event callback: room_joined')
 
-                setLocalStream(state.mediaConstraints, dispatch).then()
-                socket.emit('start_call', state.channelId)
-            })
+            await setLocalStream(state.mediaConstraints, dispatch).then()
+            socket.emit('start_call', state.channelId)
+        })
 
-            socket.on('full_room', () => {
-                console.log('Socket event callback: full_room')
+        socket.on('full_room', () => {
+            console.log('Socket event callback: full_room')
 
-                alert('The room is full, please try another one')
-            })
+            alert('The room is full, please try another one')
+        })
 
-            // Unsubscribe listeners on unmount
-            return function unsubscribe() {
-                socket.on('room_created', null)
-                socket.on('room_joined', null)
-                socket.on('full_room', null)
-            }
+        socket.on('start_call', async () => {
+                console.log('Socket event callback: start_call')
 
-        }
-    }, [state.channelId])
-
-    useEffect(() => {
-        if (state.channelId) {
-            console.log(state)
-            // SOCKET EVENT CALLBACKS =====================================================
-            socket.on('start_call', async () => {
-                    console.log('Socket event callback: start_call')
-                    console.log(state.isCaller)
-
-                    if (state.isCaller) {
-                        state.localStream && addLocalTracks(peerConnection)
-                        peerConnection.ontrack = dispatchSetRemoteStream(dispatch)
-                        peerConnection.onicecandidate = sendIceCandidate
-                        await createOffer(peerConnection)
-                    }
-                }
-            )
-
-            socket.on('webrtc_offer', async (event) => {
-                console.log('Socket event callback: webrtc_offer')
-
-                if (!state.isCaller) {
-                    state.localStream && addLocalTracks(peerConnection)
+                if (state.isCaller) {
+                    addLocalTracks(peerConnection)
                     peerConnection.ontrack = dispatchSetRemoteStream(dispatch)
                     peerConnection.onicecandidate = sendIceCandidate
-                    peerConnection.setRemoteDescription(new RTCSessionDescription(event)).then()
-                    await createAnswer(peerConnection)
+                    await createOffer(peerConnection)
                 }
-            })
-
-            socket.on('webrtc_answer', (event) => {
-                console.log('Socket event callback: webrtc_answer')
-
-                peerConnection.setRemoteDescription(new RTCSessionDescription(event)).then()
-            })
-
-            socket.on('webrtc_ice_candidate', (event) => {
-                console.log('Socket event callback: webrtc_ice_candidate')
-
-                // ICE candidate configuration.
-                let candidate = new RTCIceCandidate({
-                    sdpMLineIndex: event.label,
-                    candidate: event.candidate,
-                })
-                peerConnection.addIceCandidate(candidate).then()
-            })
-
-            // Unsubscribe listeners on unmount
-            return function unsubscribe() {
-                socket.on('start_call', null)
-                socket.on('webrtc_offer', null)
-                socket.on('webrtc_answer', null)
-                socket.on('webrtc_ice_candidate', null)
-                peerConnection.onicecandidate = null
             }
-        }
-    }, [state.localStream, state.remoteStream])
+        )
 
+        socket.on('webrtc_offer', async (event) => {
+            console.log('Socket event callback: webrtc_offer')
+
+            if (!state.isCaller) {
+                addLocalTracks(peerConnection)
+                peerConnection.ontrack = dispatchSetRemoteStream(dispatch)
+                peerConnection.onicecandidate = sendIceCandidate
+                peerConnection.setRemoteDescription(new RTCSessionDescription(event)).then()
+                await createAnswer(peerConnection)
+            }
+        })
+
+        socket.on('webrtc_answer', (event) => {
+            console.log('Socket event callback: webrtc_answer')
+
+            peerConnection.setRemoteDescription(new RTCSessionDescription(event)).then()
+        })
+
+        socket.on('webrtc_ice_candidate', (event) => {
+            console.log('Socket event callback: webrtc_ice_candidate')
+
+            // ICE candidate configuration.
+            let candidate = new RTCIceCandidate({
+                sdpMLineIndex: event.label,
+                candidate: event.candidate,
+            })
+            peerConnection.addIceCandidate(candidate).then()
+        })
+
+        // Unsubscribe listeners on unmount
+        return function unsubscribe() {
+            socket.off('room_created');
+            socket.off('room_joined');
+            socket.off('full_room');
+            socket.off('start_call');
+            socket.off('webrtc_offer');
+            socket.off('webrtc_answer');
+            socket.off('webrtc_ice_candidate');
+            console.log("unsubscribed")
+        }
+    })
 
     // FUNCTIONS ==================================================================
     function addLocalTracks(rtcPeerConnection) {
@@ -155,6 +140,7 @@ function CallProvider({children}) {
     }
 
     function sendIceCandidate(event) {
+        console.log("sendIceCandidate called")
         if (event.candidate) {
             socket.emit('webrtc_ice_candidate', {
                 channelId: state.channelId,
