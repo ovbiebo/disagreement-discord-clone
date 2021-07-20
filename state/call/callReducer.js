@@ -17,8 +17,16 @@ export default function callReducer(state, action) {
         case actions.SET_LOCAL_STREAM: {
             return {...state, localStream: action.payload}
         }
-        case actions.SET_REMOTE_STREAM: {
-            return {...state, remoteStream: action.payload}
+        case actions.ADD_REMOTE_STREAM: {
+            return {...state, remoteStreams: [...state.remoteStreams, action.payload]}
+        }
+        case actions.REMOVE_REMOTE_STREAM: {
+            const remoteStreamsReducer = (accumulator, currentStream) => {
+                currentStream.userId !== action.payload && accumulator.push({ ...currentStream })
+                return accumulator
+            }
+
+            return {...state, remoteStreams: state.remoteStreams.reduce(remoteStreamsReducer, [])}
         }
         case actions.TOGGLE_SPEAKER: {
             return {...state, isSpeakerEnabled: !this.state.isSpeakerEnabled}

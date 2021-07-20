@@ -1,9 +1,7 @@
 import * as actions from "../../utils/constants/actions";
-import {socket} from "../../call-service/callConfig";
 
 export function joinCall(channelId, user) {
-    const emitted = socket.emit('join', channelId)
-    return emitted && {
+    return {
         type: actions.JOIN_CALL,
         payload: {channelId, user}
     }
@@ -16,24 +14,38 @@ export function endCall(channelId) {
     }
 }
 
-export async function setLocalStream(mediaConstraints, dispatch) {
-    try {
-        let stream = await navigator.mediaDevices.getUserMedia(mediaConstraints)
-        dispatch({
-            type: actions.SET_LOCAL_STREAM,
-            payload: stream
-        })
-    } catch (error) {
-        console.error('Could not get user media', error)
+export function setLocalStream(stream) {
+    return {
+        type: actions.SET_LOCAL_STREAM,
+        payload: stream
     }
 }
 
-export function dispatchSetRemoteStream(dispatch) {
-    return function setRemoteStream(event) {
-        dispatch({
-            type: actions.SET_REMOTE_STREAM,
-            payload: event.streams[0]
-        })
+export function addRemoteStream(stream, userId) {
+    return {
+        type: actions.ADD_REMOTE_STREAM,
+        payload: {userId, stream}
+    }
+}
+
+export function removeRemoteStream(userId) {
+    return {
+        type: actions.REMOVE_REMOTE_STREAM,
+        payload: userId
+    }
+}
+
+export function addCall(stream, userId) {
+    return {
+        type: actions.ADD_REMOTE_STREAM,
+        payload: {userId, stream}
+    }
+}
+
+export function removeCall(userId) {
+    return {
+        type: actions.REMOVE_REMOTE_STREAM,
+        payload: userId
     }
 }
 

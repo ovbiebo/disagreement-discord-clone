@@ -1,10 +1,9 @@
-import {useContext, useEffect, useMemo} from "react";
+import {useContext, useMemo} from "react";
 import {channelContext} from "../../state/channelContext";
 import {Disclosure} from "@headlessui/react";
 import {ChevronDownIcon, HashtagIcon, PlusIcon} from "@heroicons/react/outline";
 import {VolumeUpIcon} from "@heroicons/react/solid";
-import {joinCall} from "../../state/call/callActions";
-import {callContext} from "../../state/call/callContext";
+import {callContext, useCall} from "../../state/call/callContext";
 import {useUser} from "../../state/userContext";
 import Image from "next/image";
 
@@ -94,14 +93,13 @@ function ChannelsListLoaded({channels, addChannel}) {
 function VoiceChannelListItem({channel}) {
     const [state, dispatch] = useContext(callContext)
     const {user} = useUser();
+    const {initCall} = useCall();
 
     return (
         <>
             <div
                 className={`${(state.channelId === channel) && "text-white bg-gray-700"} flex items-center mb-1 pl-4 h-8 rounded-md cursor-pointer w-full hover:bg-gray-700 hover:text-white`}
-                onClick={() => dispatch(
-                    joinCall(channel.id, {name: user.displayName, imageURL: user.photoURL})
-                )}
+                onClick={() => initCall(channel.id, {name: user.displayName, imageURL: user.photoURL})}
             >
                 <VolumeUpIcon className={"w-4 h-4 mr-2"}/>
                 {channel.name}

@@ -1,7 +1,7 @@
-import React, {createContext, useEffect, useReducer} from 'react'
+import React, {createContext, useContext, useEffect, useReducer} from 'react'
 import callReducer from "./callReducer";
-import {peerConnection, socket} from "../../call-service/callConfig";
-import {dispatchSetRemoteStream, setLocalStream} from "./callActions";
+import {socket} from "../../call-service/callConfig";
+import {addRemoteStream, joinCall, removeRemoteStream, setLocalStream} from "./callActions";
 
 const callContext = createContext()
 
@@ -9,14 +9,14 @@ function CallProvider({children}) {
     const callState = {
         breadCrumbs: null,
         channelId: null,
+        peerServer: null,
+        peers: {},
         mediaConstraints: {
             audio: true,
-            video: false,
+            video: true,
         },
         localStream: null,
-        remoteStream: null,
-        isCaller: false,
-        isConnected: false,
+        remoteStreams: [],
         isSpeakerEnabled: true,
         isMicrophoneEnabled: false,
         isVideoEnabled: false,
@@ -25,129 +25,67 @@ function CallProvider({children}) {
     const [state, dispatch] = useReducer(callReducer, callState)
 
     useEffect(() => {
-        // SOCKET EVENT CALLBACKS
-        socket.on('room_created', async () => {
-            console.log('Socket event callback: room_created')
-
-            state.isCaller = true
-            await setLocalStream(state.mediaConstraints, dispatch).then()
-        })
-
-        socket.on('room_joined', async () => {
-            console.log('Socket event callback: room_joined')
-
-            await setLocalStream(state.mediaConstraints, dispatch).then()
-            socket.emit('start_call', state.channelId)
-        })
-
-        socket.on('full_room', () => {
-            console.log('Socket event callback: full_room')
-
-            alert('The room is full, please try another one')
-        })
-
-        socket.on('start_call', async () => {
-                console.log('Socket event callback: start_call')
-
-                if (state.isCaller) {
-                    addLocalTracks(peerConnection)
-                    peerConnection.ontrack = dispatchSetRemoteStream(dispatch)
-                    peerConnection.onicecandidate = sendIceCandidate
-                    await createOffer(peerConnection)
+        if (state.channelId) {
+            socket.on('user-disconnected', userId => {
+                console.log('Socket event callback: user-disconnected')
+                if (state.peers[userId]) {
+                    state.peers[userId].off('stream')
+                    state.peers[userId].close()
+                    state.peers[userId].off('close')
                 }
-            }
-        )
-
-        socket.on('webrtc_offer', async (event) => {
-            console.log('Socket event callback: webrtc_offer')
-
-            if (!state.isCaller) {
-                addLocalTracks(peerConnection)
-                peerConnection.ontrack = dispatchSetRemoteStream(dispatch)
-                peerConnection.onicecandidate = sendIceCandidate
-                peerConnection.setRemoteDescription(new RTCSessionDescription(event)).then()
-                await createAnswer(peerConnection)
-            }
-        })
-
-        socket.on('webrtc_answer', (event) => {
-            console.log('Socket event callback: webrtc_answer')
-
-            peerConnection.setRemoteDescription(new RTCSessionDescription(event)).then()
-        })
-
-        socket.on('webrtc_ice_candidate', (event) => {
-            console.log('Socket event callback: webrtc_ice_candidate')
-
-            // ICE candidate configuration.
-            let candidate = new RTCIceCandidate({
-                sdpMLineIndex: event.label,
-                candidate: event.candidate,
             })
-            peerConnection.addIceCandidate(candidate).then()
-        })
 
-        // Unsubscribe listeners on unmount
-        return function unsubscribe() {
-            socket.off('room_created');
-            socket.off('room_joined');
-            socket.off('full_room');
-            socket.off('start_call');
-            socket.off('webrtc_offer');
-            socket.off('webrtc_answer');
-            socket.off('webrtc_ice_candidate');
-            console.log("unsubscribed")
-        }
-    })
-
-    // FUNCTIONS ==================================================================
-    function addLocalTracks(rtcPeerConnection) {
-        state.localStream.getTracks().forEach((track) => {
-            rtcPeerConnection.addTrack(track, state.localStream)
-        })
-    }
-
-    async function createOffer(rtcPeerConnection) {
-        let sessionDescription
-        try {
-            sessionDescription = await rtcPeerConnection.createOffer()
-            rtcPeerConnection.setLocalDescription(sessionDescription).then()
-        } catch (error) {
-            console.error(error)
-        }
-
-        socket.emit('webrtc_offer', {
-            type: 'webrtc_offer',
-            sdp: sessionDescription,
-            channelId: state.channelId,
-        })
-    }
-
-    async function createAnswer(rtcPeerConnection) {
-        let sessionDescription
-        try {
-            sessionDescription = await rtcPeerConnection.createAnswer()
-            rtcPeerConnection.setLocalDescription(sessionDescription).then()
-        } catch (error) {
-            console.error(error)
-        }
-
-        socket.emit('webrtc_answer', {
-            type: 'webrtc_answer',
-            sdp: sessionDescription,
-            channelId: state.channelId,
-        })
-    }
-
-    function sendIceCandidate(event) {
-        console.log("sendIceCandidate called")
-        if (event.candidate) {
-            socket.emit('webrtc_ice_candidate', {
-                channelId: state.channelId,
-                label: event.candidate.sdpMLineIndex,
-                candidate: event.candidate.candidate,
+            state.peerServer.on('open', id => {
+                console.log('Peer server event callback: open')
+                socket.emit('join-room', state.channelId, id)
             })
+
+            // Unsubscribe listeners on unmount
+            return function unsubscribe() {
+                socket.off('user-disconnected')
+                state.peerServer.off('open')
+                console.log("unsubscribed")
+            }
         }
+    }, [state.channelId])
+
+    useEffect(() => {
+        if (state.localStream) {
+            state.peerServer.on('call', call => {
+                console.log("Peer server event callback: call")
+                state.peers[call.peer] = call
+                call.answer(state.localStream)
+                call.on('stream', (remoteStream) => {
+                    console.log('Peer server call received event callback: stream')
+                    dispatch(addRemoteStream(remoteStream))
+                })
+            })
+
+            socket.on('user-connected', userId => {
+                console.log('Socket event callback: user-connected')
+                connectToNewUser(userId, state.localStream)
+            })
+
+            // Unsubscribe listeners on unmount
+            return function unsubscribe() {
+                socket.off('user-connected');
+                state.peerServer.off('call')
+                console.log("unsubscribed")
+            }
+        }
+    }, [state.localStream])
+
+    function connectToNewUser(userId, stream) {
+        const call = state.peerServer.call(userId, stream)
+        call.on('stream', remoteStream => {
+            console.log('Peer server call sent event callback: stream')
+            dispatch(addRemoteStream(remoteStream, userId))
+        })
+        call.on('close', () => {
+            dispatch(removeRemoteStream(userId))
+        })
+
+        state.peers[userId] = call
     }
 
     return (
@@ -158,3 +96,32 @@ function CallProvider({children}) {
 }
 
 export {CallProvider, callContext}
+
+export function useCall() {
+    const [state, dispatch] = useContext(callContext)
+
+    async function initCall(channelId, user) {
+        try {
+            async function createPeer() {
+                const {default: Peer} = await import('peerjs')
+                return new Peer()
+            }
+
+            state.peerServer = await createPeer()
+            console.log(state.peerServer)
+
+            let stream = await navigator.mediaDevices.getUserMedia(state.mediaConstraints)
+            dispatch(setLocalStream(stream))
+
+            const emitted = socket.emit('join', channelId)
+            emitted && dispatch(joinCall(channelId, user))
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    return {
+        initCall
+    }
+}
