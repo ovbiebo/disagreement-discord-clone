@@ -1,7 +1,8 @@
-import React, {createContext, useContext, useEffect, useReducer} from 'react'
+import React, {createContext, useContext, useEffect, useReducer, useState} from 'react'
 import callReducer from "./callReducer";
 import {socket} from "../../call-service/callConfig";
-import {addRemoteStream, joinCall, removeRemoteStream, setLocalStream} from "./callActions";
+import {addPeerCall, addRemoteStream, joinCall, removePeerCall, removeRemoteStream} from "./callActions";
+import {useUser} from "../userContext";
 
 const callContext = createContext()
 
@@ -9,8 +10,11 @@ function CallProvider({children}) {
     const callState = {
         breadCrumbs: null,
         channelId: null,
+        userInfo: null,
+        channels: {},
         peerServer: null,
-        peers: {},
+        peerCalls: {},
+        participants: [],
         mediaConstraints: {
             audio: true,
             video: true,
@@ -26,67 +30,65 @@ function CallProvider({children}) {
 
     useEffect(() => {
         if (state.channelId) {
-            socket.on('user-disconnected', userId => {
-                console.log('Socket event callback: user-disconnected')
-                if (state.peers[userId]) {
-                    state.peers[userId].off('stream')
-                    state.peers[userId].close()
-                    state.peers[userId].off('close')
-                }
-            })
-
-            state.peerServer.on('open', id => {
-                console.log('Peer server event callback: open')
-                socket.emit('join-room', state.channelId, id)
-            })
-
-            // Unsubscribe listeners on unmount
-            return function unsubscribe() {
-                socket.off('user-disconnected')
-                state.peerServer.off('open')
-                console.log("unsubscribed")
-            }
-        }
-    }, [state.channelId])
-
-    useEffect(() => {
-        if (state.localStream) {
-            state.peerServer.on('call', call => {
-                console.log("Peer server event callback: call")
-                state.peers[call.peer] = call
-                call.answer(state.localStream)
-                call.on('stream', (remoteStream) => {
-                    console.log('Peer server call received event callback: stream')
-                    dispatch(addRemoteStream(remoteStream))
-                })
-            })
-
             socket.on('user-connected', userId => {
                 console.log('Socket event callback: user-connected')
-                connectToNewUser(userId, state.localStream)
+                //sendDetailsToNewUser
+                socket.emit('send-details-to-new-user', state.channelId, userId, state.userInfo)
+            })
+
+            socket.on('user-disconnected', userId => {
+                console.log('Socket event callback: user-disconnected')
+                if (state.peerCalls[userId]) state.peerCalls[userId].close()
+                dispatch(removePeerCall(userId))
+            })
+
+            socket.on('user-joined-call', user => {
+                console.log('Socket event callback: user-joined-call')
+                const call = state.peerServer.call(user.id, state.localStream)
+                console.log(call)
+                dispatch(addPeerCall({participant: user, peerCall: call}))
             })
 
             // Unsubscribe listeners on unmount
             return function unsubscribe() {
                 socket.off('user-connected');
-                state.peerServer.off('call')
-                console.log("unsubscribed")
+                socket.off('user-disconnected')
+                socket.off('user-joined-call')
             }
         }
-    }, [state.localStream])
+    })
 
-    function connectToNewUser(userId, stream) {
-        const call = state.peerServer.call(userId, stream)
-        call.on('stream', remoteStream => {
-            console.log('Peer server call sent event callback: stream')
-            dispatch(addRemoteStream(remoteStream, userId))
+    useEffect(() => {
+        const peerCalls = Object.entries(state.peerCalls)
+        peerCalls.forEach(([userId, peerCall]) => {
+            peerCall.on('stream', remoteStream => {
+                console.log('Peer server call sent event callback: stream')
+                dispatch(addRemoteStream(remoteStream, peerCall.peer))
+            })
+            peerCall.on('close', () => {
+                dispatch(removeRemoteStream(peerCall.peer))
+            })
         })
-        call.on('close', () => {
-            dispatch(removeRemoteStream(userId))
+        return () => peerCalls.forEach(([userId, peerCall]) => {
+            peerCall.off('stream')
+            peerCall.off('close')
         })
+    }, [state.peerCalls])
 
-        state.peers[userId] = call
-    }
+    useEffect(() => {
+        if (state.localStream && state.peerServer) {
+            state.peerServer.on('call', call => {
+                console.log("Peer server event callback: call")
+                call.answer(state.localStream)
+                dispatch(addPeerCall({participant: null, peerCall: call}))
+            })
+
+            // Unsubscribe listeners on unmount
+            return function unsubscribe() {
+                state.peerServer.off('call')
+            }
+        }
+    }, [state.localStream, state.peerServer])
 
     return (
         <callContext.Provider value={[state, dispatch]}>
@@ -97,24 +99,74 @@ function CallProvider({children}) {
 
 export {CallProvider, callContext}
 
-export function useCall() {
+export function useCallWithoutParticipating(channelId) {
+    const {user} = useUser();
     const [state, dispatch] = useContext(callContext)
+    const [participants, setParticipants] = useState([])
+    const [callerId, setCallerId] = useState(null)
 
-    async function initCall(channelId, user) {
+    useEffect(() => {
+        if (channelId !== state.channelId) {
+            socket.emit('join-channel', channelId)
+            socket.on('channel-joined', async (userId) => {
+                console.log('Socket event callback: channel-joined')
+                setCallerId(userId)
+            })
+        }
+        return () => {
+            socket.emit('leave-channel', channelId)
+            socket.off('channel-joined')
+        }
+    }, [])
+
+    useEffect(() => {
+        socket.on('user-disconnected', userId => {
+            console.log('Socket event callback: user-disconnected')
+            setParticipants(participants.filter((participant) => participant.id !== userId))
+        })
+
+        socket.on('participant-sent-details', (participant) => {
+            console.log('Socket event callback: participant-sent-details')
+            setParticipants([...participants, participant])
+        })
+
+        socket.on('user-joined-call', participant => {
+            console.log('Socket event callback: user-joined-call')
+            setParticipants([...participants, participant])
+        })
+
+        return function unsubscribe() {
+            socket.off('user-disconnected');
+            socket.off('participant-sent-details');
+            socket.off('user-joined-call');
+        }
+    })
+
+    async function initCall(channelId) {
         try {
-            async function createPeer() {
-                const {default: Peer} = await import('peerjs')
-                return new Peer()
+            //user info for joining call
+            const callUser = {
+                id: callerId,
+                name: user.displayName,
+                imageURL: user.photoURL
             }
 
-            state.peerServer = await createPeer()
-            console.log(state.peerServer)
-
+            //local stream
             let stream = await navigator.mediaDevices.getUserMedia(state.mediaConstraints)
-            dispatch(setLocalStream(stream))
 
-            const emitted = socket.emit('join', channelId)
-            emitted && dispatch(joinCall(channelId, user))
+            //peer server
+            async function createPeer(callerId) {
+                const {default: Peer} = await import('peerjs')
+                return new Peer(callerId)
+            }
+
+            const peerServer = await createPeer(callerId)
+
+            peerServer.on('open', id => {
+                console.log('Peer server event callback: open')
+                const emitted = !state.channelId && socket.emit('join-call', channelId, callUser)
+                emitted && dispatch(joinCall(channelId, callUser, peerServer, stream, participants))
+            })
 
         } catch (error) {
             console.error(error)
@@ -122,6 +174,7 @@ export function useCall() {
     }
 
     return {
-        initCall
+        initCall,
+        participants
     }
 }

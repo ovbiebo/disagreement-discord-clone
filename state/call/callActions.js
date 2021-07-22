@@ -1,9 +1,9 @@
 import * as actions from "../../utils/constants/actions";
 
-export function joinCall(channelId, user) {
+export function joinCall(channelId, userInfo, peerServer, localStream, participants) {
     return {
         type: actions.JOIN_CALL,
-        payload: {channelId, user}
+        payload: {channelId, userInfo, peerServer, localStream, participants}
     }
 }
 
@@ -21,6 +21,20 @@ export function setLocalStream(stream) {
     }
 }
 
+export function addPeerCall({participant, peerCall}) {
+    return {
+        type: actions.ADD_PEER_CALL,
+        payload: {participant, peerCall}
+    }
+}
+
+export function removePeerCall(participantId) {
+    return {
+        type: actions.REMOVE_PEER_CALL,
+        payload: participantId
+    }
+}
+
 export function addRemoteStream(stream, userId) {
     return {
         type: actions.ADD_REMOTE_STREAM,
@@ -29,20 +43,6 @@ export function addRemoteStream(stream, userId) {
 }
 
 export function removeRemoteStream(userId) {
-    return {
-        type: actions.REMOVE_REMOTE_STREAM,
-        payload: userId
-    }
-}
-
-export function addCall(stream, userId) {
-    return {
-        type: actions.ADD_REMOTE_STREAM,
-        payload: {userId, stream}
-    }
-}
-
-export function removeCall(userId) {
     return {
         type: actions.REMOVE_REMOTE_STREAM,
         payload: userId
