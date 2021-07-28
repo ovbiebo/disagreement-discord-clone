@@ -6,7 +6,7 @@ const signIn = async (email, password) => {
             return userCredential.user;
         })
         .catch((error) => {
-            throw error.message
+            throw error.code
         });
 }
 
@@ -14,17 +14,16 @@ const signUp = async (email, password) => {
     try {
         const fakeUserPhoto = await generateRandomPhoto()
         const fakeUsername = await generateRandomName()
-        return firebase
+        const userCredentials = await firebase
             .auth()
             .createUserWithEmailAndPassword(email, password)
-            .then((userCredentials) => {
-                return userCredentials.user.updateProfile({
-                    displayName: fakeUsername,
-                    photoURL: fakeUserPhoto
-                })
-            })
+        await userCredentials.user.updateProfile({
+            displayName: fakeUsername,
+            photoURL: fakeUserPhoto
+        })
+        return userCredentials.user
     } catch (error) {
-        throw error.message
+        throw error.code
     }
 }
 

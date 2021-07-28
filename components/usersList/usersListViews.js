@@ -3,16 +3,16 @@ import Image from "next/image"
 function UsersListLoaded({users}) {
     return (
         <>
-                {
-                    users && users.map((user, index) => {
-                        return (
-                            <div key={index} className={"flex items-center mb-3"}>
-                                <Image width={36} height={36} src={user.photoURL} className={"rounded-full"}/>
-                                <p className={"ml-3 text-md"}>{user.displayName}</p>
-                            </div>
-                        )
-                    })
-                }
+            {
+                users && users.map((user, index) => {
+                    return (
+                        <div key={index} className={"flex items-center mb-3"}>
+                            <Image width={36} height={36} src={user.photoURL} className={"rounded-full"}/>
+                            <p className={"ml-3 text-md"}>{user.displayName}</p>
+                        </div>
+                    )
+                })
+            }
         </>
     )
 }
