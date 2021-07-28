@@ -3,10 +3,10 @@ import {callContext} from "../../state/call/callContext";
 import {DesktopComputerIcon, PhoneMissedCallIcon, VideoCameraIcon} from "@heroicons/react/solid"
 
 function CallStatusBar() {
-    const [callState, dispatch] = useContext(callContext)
+    const [callState] = useContext(callContext)
 
-    return callState.channelId &&
-        <div className={"p-2 mb-1 bg-gray-900"}>
+    return callState.ongoingCallId &&
+        <div className={"p-2 bg-gray-900"}>
             <div className={"flex items-center mb-1"}>
                 <div className={"flex-1"}>
                     <p>Voice Connected</p>

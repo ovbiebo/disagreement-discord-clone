@@ -23,6 +23,9 @@ module.exports = {
             },
             borderRadius: {
                 '4xl': '2rem',
+            },
+            scale: {
+                '-100': '-1'
             }
         }
     },

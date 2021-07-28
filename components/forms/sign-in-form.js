@@ -3,17 +3,23 @@ import Link from "next/link"
 import {useRouter} from "next/router";
 import TextField from "../common/inputs/text-field";
 import {signIn} from "../../data-sources/fetchers/user";
+import {useState} from "react";
+import {LoadingSpinner} from "../common/indicators/loadingSpinner";
 
 const SignInForm = () => {
     const router = useRouter()
+    const [signingIn, setSigningIn] = useState(false)
+    const [error, setError] = useState(null)
 
     const submitForm = async (e) => {
         e.preventDefault();
         try {
+            setSigningIn(true)
             await signIn(e.target.email.value, e.target.password.value)
             await router.push("/app")
         } catch (error) {
-            console.error(error)
+            setSigningIn(false)
+            setError(error)
         }
     }
 
@@ -21,14 +27,17 @@ const SignInForm = () => {
         <form className="mt-4" action="#" method="POST" onSubmit={submitForm}>
             <div className="rounded-md shadow-sm">
                 <div>
-                    <label htmlFor="email" className="text-xs font-medium text-gray-400 uppercase">
-                        Email address
+                    <label htmlFor="email"
+                           className={`text-xs ${!error ? "text-gray-400" : "text-red-500"} flex`}>
+                        <p className={"font-medium uppercase mr-2"}>Email address</p>
+                        {error && <p className={"font-light"}>{"- Login or password is invalid"}</p>}
                     </label>
                     <TextField type={"email"} placeholder={"Email address"} required/>
                 </div>
                 <div className={"mt-2"}>
-                    <label htmlFor="password" className="text-xs font-medium text-gray-400 uppercase">
-                        Password
+                    <label htmlFor="password" className={`text-xs ${!error ? "text-gray-400" : "text-red-500"} flex`}>
+                        <p className={"font-medium uppercase mr-2"}>Password</p>
+                        {error && <p className={"font-light"}>{"- Login or password is invalid"}</p>}
                     </label>
                     <TextField type={"password"} placeholder={"Password"} required/>
                 </div>
@@ -58,9 +67,14 @@ const SignInForm = () => {
                 <button
                     type="submit"
                     className="mt-4 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    disabled={signingIn}
                 >
               <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                <LockClosedIcon className="h-5 w-5 text-indigo-400 group-hover:text-indigo-500" aria-hidden="true"/>
+                  {signingIn
+                      ? <LoadingSpinner className="h-5 w-5 text-white" aria-hidden="true"/>
+                      : <LockClosedIcon className="h-5 w-5 text-indigo-400 group-hover:text-indigo-500"
+                                        aria-hidden="true"/>
+                  }
               </span>
                     Sign in
                 </button>

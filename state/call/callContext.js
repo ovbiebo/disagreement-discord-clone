@@ -1,22 +1,24 @@
-import React, {createContext, useEffect, useReducer} from 'react'
+import React, {createContext, useContext, useEffect, useReducer, useRef, useState} from 'react'
 import callReducer from "./callReducer";
-import {peerConnection, socket} from "../../call-service/callConfig";
-import {dispatchSetRemoteStream, setLocalStream} from "./callActions";
+import {socket} from "../../call-service/callConfig";
+import {addPeerCall, addRemoteStream, joinCall, removePeerCall, removeRemoteStream} from "./callActions";
+import {useUser} from "../userContext";
 
 const callContext = createContext()
 
 function CallProvider({children}) {
     const callState = {
         breadCrumbs: null,
-        channelId: null,
+        ongoingCallId: null,
+        userInfo: null,
+        peerServer: null,
+        peerCalls: {},
         mediaConstraints: {
-            audio: true,
-            video: false,
+            audio: false,
+            video: true,
         },
         localStream: null,
-        remoteStream: null,
-        isCaller: false,
-        isConnected: false,
+        remoteStreams: [],
         isSpeakerEnabled: true,
         isMicrophoneEnabled: false,
         isVideoEnabled: false,
@@ -25,130 +27,109 @@ function CallProvider({children}) {
     const [state, dispatch] = useReducer(callReducer, callState)
 
     useEffect(() => {
-        // SOCKET EVENT CALLBACKS
-        socket.on('room_created', async () => {
-            console.log('Socket event callback: room_created')
 
-            state.isCaller = true
-            await setLocalStream(state.mediaConstraints, dispatch).then()
-        })
+        if (state.ongoingCallId) {
+            let onRemoteStreamReceived = () => null
+            let onPeerCallClosed = () => null;
+            let peerCall = null;
 
-        socket.on('room_joined', async () => {
-            console.log('Socket event callback: room_joined')
-
-            await setLocalStream(state.mediaConstraints, dispatch).then()
-            socket.emit('start_call', state.channelId)
-        })
-
-        socket.on('full_room', () => {
-            console.log('Socket event callback: full_room')
-
-            alert('The room is full, please try another one')
-        })
-
-        socket.on('start_call', async () => {
-                console.log('Socket event callback: start_call')
-
-                if (state.isCaller) {
-                    addLocalTracks(peerConnection)
-                    peerConnection.ontrack = dispatchSetRemoteStream(dispatch)
-                    peerConnection.onicecandidate = sendIceCandidate
-                    await createOffer(peerConnection)
+            const onUserConnected = (userId, channelId) => {
+                if (state.ongoingCallId === channelId) {
+                    console.log('Socket event callback: user-connected')
+                    socket.emit('send-details-to-new-user', state.ongoingCallId, userId, state.userInfo)
                 }
             }
-        )
 
-        socket.on('webrtc_offer', async (event) => {
-            console.log('Socket event callback: webrtc_offer')
-
-            if (!state.isCaller) {
-                addLocalTracks(peerConnection)
-                peerConnection.ontrack = dispatchSetRemoteStream(dispatch)
-                peerConnection.onicecandidate = sendIceCandidate
-                peerConnection.setRemoteDescription(new RTCSessionDescription(event)).then()
-                await createAnswer(peerConnection)
+            const onUserDisconnected = (userId, callId) => {
+                console.log(callId)
+                if (state.ongoingCallId === callId) {
+                    console.log('Socket event callback: user-disconnected')
+                    if (state.peerCalls[userId]) state.peerCalls[userId].close()
+                    dispatch(removePeerCall(userId))
+                }
             }
-        })
 
-        socket.on('webrtc_answer', (event) => {
-            console.log('Socket event callback: webrtc_answer')
+            const onUserJoinedCall = (user, callId) => {
+                if (state.ongoingCallId === callId) {
+                    console.log('Socket event callback: user-joined-call')
+                    const call = state.peerServer.call(user.id, state.localStream)
+                    call.on('stream', () => console.log("stream received"))
 
-            peerConnection.setRemoteDescription(new RTCSessionDescription(event)).then()
-        })
+                    let streamCount = 0
+                    const onRemoteStreamReceived = (remoteStream) => {
+                        console.log('Peer server call sent event callback: stream')
+                        if (streamCount < 1) dispatch(addRemoteStream(remoteStream, call.peer))
+                        streamCount++
+                    }
+                    const onPeerCallClosed = () => {
+                        dispatch(removeRemoteStream(call.peer))
+                    }
+                    call.on('stream', onRemoteStreamReceived)
+                    call.on('close', onPeerCallClosed)
 
-        socket.on('webrtc_ice_candidate', (event) => {
-            console.log('Socket event callback: webrtc_ice_candidate')
+                    dispatch(addPeerCall(call))
+                }
+            }
 
-            // ICE candidate configuration.
-            let candidate = new RTCIceCandidate({
-                sdpMLineIndex: event.label,
-                candidate: event.candidate,
-            })
-            peerConnection.addIceCandidate(candidate).then()
-        })
+            const onUserLeftCall = (userId, callId) => {
+                if (state.ongoingCallId === callId) {
+                    console.log('Socket event callback: user-left-call')
+                    if (state.peerCalls[userId]) state.peerCalls[userId].close()
+                    dispatch(removePeerCall(userId))
+                }
+            }
 
-        // Unsubscribe listeners on unmount
-        return function unsubscribe() {
-            socket.off('room_created');
-            socket.off('room_joined');
-            socket.off('full_room');
-            socket.off('start_call');
-            socket.off('webrtc_offer');
-            socket.off('webrtc_answer');
-            socket.off('webrtc_ice_candidate');
-            console.log("unsubscribed")
+            socket.on('user-connected', onUserConnected)
+            socket.on('user-disconnected', onUserDisconnected)
+            socket.on('user-joined-call', onUserJoinedCall)
+            socket.on('user-left-call', onUserLeftCall)
+
+            // Unsubscribe listeners on unmount
+            return function unsubscribe() {
+                peerCall && peerCall.off('stream', onRemoteStreamReceived)
+                peerCall && peerCall.off('close', onPeerCallClosed)
+                socket.off('user-connected', onUserConnected);
+                socket.off('user-disconnected', onUserDisconnected)
+                socket.off('user-joined-call', onUserJoinedCall)
+                socket.off('user-left-call', onUserLeftCall)
+            }
         }
     })
 
-    // FUNCTIONS ==================================================================
-    function addLocalTracks(rtcPeerConnection) {
-        state.localStream.getTracks().forEach((track) => {
-            rtcPeerConnection.addTrack(track, state.localStream)
-        })
-    }
+    useEffect(() => {
+        if (state.localStream && state.peerServer) {
+            let onRemoteStreamReceived = () => null
+            let onPeerCallClosed = () => null;
+            let peerCall = null;
 
-    async function createOffer(rtcPeerConnection) {
-        let sessionDescription
-        try {
-            sessionDescription = await rtcPeerConnection.createOffer()
-            rtcPeerConnection.setLocalDescription(sessionDescription).then()
-        } catch (error) {
-            console.error(error)
+            const onReceivedCall = (call) => {
+                let streamCount = 0
+                onRemoteStreamReceived = (remoteStream) => {
+                    console.log('Peer server call sent event callback: stream')
+                    if (streamCount < 1) dispatch(addRemoteStream(remoteStream, call.peer))
+                    streamCount++
+                }
+                onPeerCallClosed = () => {
+                    dispatch(removeRemoteStream(call.peer))
+                }
+                console.log("Peer server event callback: call")
+                call.answer(state.localStream)
+                call.on('stream', onRemoteStreamReceived)
+                call.on('close', onPeerCallClosed)
+                peerCall = call;
+                dispatch(addPeerCall(call))
+            }
+
+            state.peerServer.on('call', onReceivedCall)
+
+            // Unsubscribe listeners on unmount
+            return function unsubscribe() {
+                peerCall && peerCall.off('stream', onRemoteStreamReceived)
+                peerCall && peerCall.off('close', onPeerCallClosed)
+                state.peerServer.off('call', onReceivedCall)
+            }
         }
-
-        socket.emit('webrtc_offer', {
-            type: 'webrtc_offer',
-            sdp: sessionDescription,
-            channelId: state.channelId,
-        })
-    }
-
-    async function createAnswer(rtcPeerConnection) {
-        let sessionDescription
-        try {
-            sessionDescription = await rtcPeerConnection.createAnswer()
-            rtcPeerConnection.setLocalDescription(sessionDescription).then()
-        } catch (error) {
-            console.error(error)
-        }
-
-        socket.emit('webrtc_answer', {
-            type: 'webrtc_answer',
-            sdp: sessionDescription,
-            channelId: state.channelId,
-        })
-    }
-
-    function sendIceCandidate(event) {
-        console.log("sendIceCandidate called")
-        if (event.candidate) {
-            socket.emit('webrtc_ice_candidate', {
-                channelId: state.channelId,
-                label: event.candidate.sdpMLineIndex,
-                candidate: event.candidate.candidate,
-            })
-        }
-    }
+    }, [state.localStream, state.peerServer])
 
     return (
         <callContext.Provider value={[state, dispatch]}>
@@ -158,3 +139,100 @@ function CallProvider({children}) {
 }
 
 export {CallProvider, callContext}
+
+export function useCall(channelId) {
+    const {user} = useUser();
+    const [state, dispatch] = useContext(callContext)
+    const [participants, setParticipants] = useState([])
+    const [socketId, setSocketId] = useState(null)
+
+    const joinedCall = useRef(false)
+
+    useEffect(() => {
+        socket.emit('join-channel', channelId)
+        const onChannelJoined = (userId) => {
+            console.log('Socket event callback: channel-joined')
+            setSocketId(userId)
+        }
+        socket.once('channel-joined', onChannelJoined)
+        return () => {
+            (state.ongoingCallId !== channelId) && socket.emit('leave-channel', channelId)
+            socket.off('channel-joined', onChannelJoined)
+        }
+    }, [channelId, state.ongoingCallId])
+
+    useEffect(() => {
+        if (channelId === state.ongoingCallId) {
+            setParticipants(participants => [...participants, state.userInfo])
+        }
+    }, [channelId, state.userInfo, state.ongoingCallId])
+
+    useEffect(() => {
+        const onUserDisconnected = (userId, callId) => {
+            if (channelId === callId) {
+                console.log('Socket event callback: user-disconnected')
+                setParticipants(participants.filter((participant) => participant.id !== userId))
+            }
+        }
+
+        const onReceivedParticipantDetails = (participant, callId) => {
+            if (channelId === callId) {
+                console.log('Socket event callback: participant-sent-details')
+                setParticipants([...participants, participant])
+            }
+        }
+
+        const onUserJoinedCall = (participant, callId) => {
+            if (channelId === callId) {
+                console.log('Socket event callback: user-joined-call')
+                setParticipants([...participants, participant])
+            }
+        }
+
+        socket.on('participant-sent-details', onReceivedParticipantDetails)
+        socket.on('user-disconnected', onUserDisconnected)
+        socket.on('user-joined-call', onUserJoinedCall)
+
+        return function unsubscribe() {
+            socket.off('user-disconnected', onUserDisconnected);
+            socket.off('participant-sent-details', onReceivedParticipantDetails);
+            socket.off('user-joined-call', onUserJoinedCall);
+        }
+    })
+
+    async function initCall() {
+        try {
+            //local stream
+            let stream = await navigator.mediaDevices.getUserMedia(state.mediaConstraints)
+
+            //peer server
+            async function createPeer(callerId) {
+                const {default: Peer} = await import('peerjs')
+                return new Peer(callerId)
+            }
+
+            const peerServer = await createPeer(socketId)
+
+            peerServer.on('open', id => {
+                console.log('Peer server event callback: open')
+                const callUser = {
+                    id: socketId,
+                    name: user.displayName,
+                    imageURL: user.photoURL
+                }
+                const emitted = !state.ongoingCallId && socket.emit('join-call', channelId, callUser)
+                joinedCall.current = emitted && true;
+                setParticipants([])
+                emitted && dispatch(joinCall(channelId, callUser, peerServer, stream))
+            })
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    return {
+        initCall,
+        participants
+    }
+}
