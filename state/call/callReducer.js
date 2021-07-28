@@ -1,16 +1,15 @@
-const log = console.log
 import * as actions from "../../utils/constants/actions";
+const log = console.log
 
 export default function callReducer(state, action) {
     // log(state)
-    log(action)
+    // log(action)
     switch (action.type) {
         case actions.JOIN_CALL: {
             return {
                 ...state,
-                participants: [...state.participants, ...action.payload.participants],
                 userInfo: action.payload.userInfo,
-                channelId: action.payload.channelId,
+                ongoingCallId: action.payload.channelId,
                 peerServer: action.payload.peerServer,
                 localStream: action.payload.localStream,
             }
@@ -24,15 +23,13 @@ export default function callReducer(state, action) {
         case actions.ADD_PEER_CALL: {
             return {
                 ...state,
-                participants: [...state.participants, action.payload.participant && action.payload.participant],
-                peerCalls: {...state.peerCalls, [action.payload.peerCall.peer]: action.payload.peerCall}
+                peerCalls: {...state.peerCalls, [action.payload.peer]: action.payload}
             }
         }
         case actions.REMOVE_PEER_CALL: {
-            const participants = state.participants.filter((participant) => participant.id !== action.payload)
             const peerCalls = {...state.peerCalls}
             delete peerCalls[action.payload]
-            return {...state, participants, peerCalls}
+            return {...state, peerCalls}
         }
         case actions.ADD_REMOTE_STREAM: {
             return {...state, remoteStreams: [...state.remoteStreams, action.payload]}

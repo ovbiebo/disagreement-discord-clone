@@ -3,8 +3,7 @@ import {channelContext} from "../../state/channelContext";
 import {Disclosure} from "@headlessui/react";
 import {ChevronDownIcon, HashtagIcon, PlusIcon} from "@heroicons/react/outline";
 import {VolumeUpIcon} from "@heroicons/react/solid";
-import {useCallWithoutParticipating} from "../../state/call/callContext";
-import {useUser} from "../../state/userContext";
+import {useCall} from "../../state/call/callContext";
 import Image from "next/image";
 
 function ChannelsListLoaded({channels, addChannel}) {
@@ -91,14 +90,13 @@ function ChannelsListLoaded({channels, addChannel}) {
 }
 
 function VoiceChannelListItem({channel}) {
-    const {user} = useUser();
-    const {initCall, participants} = useCallWithoutParticipating(channel.id);
+    const {initCall, participants} = useCall(channel.id);
 
     return (
         <>
             <div
                 className={`flex items-center mb-1 pl-4 h-8 rounded-md cursor-pointer w-full hover:bg-gray-700 hover:text-white`}
-                onClick={() => initCall(channel.id, {name: user.displayName, imageURL: user.photoURL})}
+                onClick={initCall}
             >
                 <VolumeUpIcon className={"w-4 h-4 mr-2"}/>
                 {channel.name}
