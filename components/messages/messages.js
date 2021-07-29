@@ -29,13 +29,13 @@ function Messages() {
                 <MenuIcon className={"w-6 h-6 mr-2 text-gray-300 lg:hidden"}/>
                 {
                     currentChannel
-                        ? <div className={"flex flex-1 items-center"}>
+                        ? <div className={"flex flex-1 truncate items-center"}>
                             <HashtagIcon className={"w-6 h-6 mr-1 flex-shrink-0 text-gray-400"}/>
                             <p className={"truncate"}>{currentChannel.name}</p>
                         </div>
                         : <div className="animate-pulse h-4 bg-gray-600 rounded-full w-full max-w-xl"/>
                 }
-                <UserGroupIcon className={"w-6 h-6 text-gray-300 lg:hidden"}/>
+                <UserGroupIcon className={"w-6 h-6 ml-2 text-gray-300 lg:hidden"}/>
             </div>
             <div className={"p-4 pb-0 overflow-y-auto flex-1"}>
                 {messagesError && <div>Error loading messages</div>}

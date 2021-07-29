@@ -54,12 +54,11 @@ function CallProvider({children}) {
                 if (state.ongoingCallId === callId) {
                     console.log('Socket event callback: user-joined-call')
                     const call = state.peerServer.call(user.id, state.localStream)
-                    call.on('stream', () => console.log("stream received"))
 
                     let streamCount = 0
                     const onRemoteStreamReceived = (remoteStream) => {
                         console.log('Peer server call sent event callback: stream')
-                        if (streamCount < 1) dispatch(addRemoteStream(remoteStream, call.peer))
+                        if (streamCount === 1) dispatch(addRemoteStream(remoteStream, call.peer))
                         streamCount++
                     }
                     const onPeerCallClosed = () => {
@@ -107,7 +106,7 @@ function CallProvider({children}) {
                 let streamCount = 0
                 onRemoteStreamReceived = (remoteStream) => {
                     console.log('Peer server call sent event callback: stream')
-                    if (streamCount < 1) dispatch(addRemoteStream(remoteStream, call.peer))
+                    if (streamCount === 1) dispatch(addRemoteStream(remoteStream, call.peer))
                     streamCount++
                 }
                 onPeerCallClosed = () => {
