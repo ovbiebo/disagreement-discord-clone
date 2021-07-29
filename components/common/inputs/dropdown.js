@@ -6,11 +6,11 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export const Dropdown = ({title, items}) => {
+export const Dropdown = ({title, items, disabled}) => {
     const [selected, setSelected] = useState(items[0])
 
     return (
-        <Listbox value={selected} onChange={setSelected}>
+        <Listbox value={selected} onChange={setSelected} disabled={disabled}>
             {({open}) => (
                 <div className="relative">
                     <Listbox.Button

@@ -18,6 +18,7 @@ const SignInForm = () => {
         e.preventDefault();
         try {
             setSigningUp(true)
+            await new Promise(resolve => setTimeout(() => resolve("some value"), 10000));
             const {uid, displayName, email, photoURL} = await signUp(e.target.email.value, e.target.password.value)
             setUser({uid, displayName, email, photoURL})
             await router.push("/app")
@@ -41,14 +42,14 @@ const SignInForm = () => {
                         <p className={"font-medium uppercase mr-2"}>Email address</p>
                         {errors.email && <p className={"font-light"}>{`- ${errors.email}`}</p>}
                     </label>
-                    <TextField type={"email"} required/>
+                    <TextField type={"email"} required disabled={signingUp}/>
                 </div>
                 <div className={"mt-2"}>
                     <label htmlFor="password" className={`text-xs ${!errors.password ? "text-gray-400" : "text-red-500"} flex`}>
                         <p className={"font-medium uppercase mr-2"}>Password</p>
                         {errors.password && <p className={"font-light"}>{`- ${errors.password}`}</p>}
                     </label>
-                    <TextField type={"password"} required/>
+                    <TextField type={"password"} required disabled={signingUp}/>
                 </div>
             </div>
             <div className={"mt-2"}>
@@ -57,9 +58,9 @@ const SignInForm = () => {
                 </label>
                 <div className={"mt-1 grid grid-cols-3 space-x-3 relative"}>
                     <Dropdown title={"month"}
-                              items={["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]}/>
-                    <Dropdown title={"date"} items={Array(31).fill(0).map((e, i) => Number.call(e, i) + 1, Number)}/>
-                    <Dropdown title={"year"} items={Array(32).fill(0).map((e, i) => 2021 - Number.call(e, i), Number)}/>
+                              items={["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]} disabled={signingUp}/>
+                    <Dropdown title={"date"} items={Array(31).fill(0).map((e, i) => Number.call(e, i) + 1, Number)} disabled={signingUp}/>
+                    <Dropdown title={"year"} items={Array(32).fill(0).map((e, i) => 2021 - Number.call(e, i), Number)} disabled={signingUp}/>
                 </div>
             </div>
 

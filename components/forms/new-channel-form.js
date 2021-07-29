@@ -87,7 +87,7 @@ export function NewChannelForm({newChannel, onChannelAdded}) {
                     <p className={"font-medium uppercase mr-2"}>Channel Name</p>
                     {error && <p className={"font-light"}>{"- Login or password is invalid"}</p>}
                 </label>
-                <TextField type={"name"} placeholder={"# New Channel"} required/>
+                <TextField type={"name"} placeholder={"# New Channel"} required disabled={addingChannel}/>
             </div>
 
             <div className="mt-4 flex justify-end">
@@ -95,6 +95,7 @@ export function NewChannelForm({newChannel, onChannelAdded}) {
                     type="button"
                     className="inline-flex mr-2 justify-center px-4 py-2 text-sm font-medium hover:underline border border-transparent focus:outline-none"
                     onClick={onChannelAdded}
+                    disabled={addingChannel}
                 >
                     Cancel
                 </button>

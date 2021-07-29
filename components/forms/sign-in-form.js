@@ -15,6 +15,7 @@ const SignInForm = () => {
         e.preventDefault();
         try {
             setSigningIn(true)
+            await new Promise(resolve => setTimeout(() => resolve("some value"), 10000));
             await signIn(e.target.email.value, e.target.password.value)
             await router.push("/app")
         } catch (error) {
@@ -32,14 +33,14 @@ const SignInForm = () => {
                         <p className={"font-medium uppercase mr-2"}>Email address</p>
                         {error && <p className={"font-light"}>{"- Login or password is invalid"}</p>}
                     </label>
-                    <TextField type={"email"} placeholder={"Email address"} required/>
+                    <TextField type={"email"} placeholder={"Email address"} required disabled={signingIn}/>
                 </div>
                 <div className={"mt-2"}>
                     <label htmlFor="password" className={`text-xs ${!error ? "text-gray-400" : "text-red-500"} flex`}>
                         <p className={"font-medium uppercase mr-2"}>Password</p>
                         {error && <p className={"font-light"}>{"- Login or password is invalid"}</p>}
                     </label>
-                    <TextField type={"password"} placeholder={"Password"} required/>
+                    <TextField type={"password"} placeholder={"Password"} required disabled={signingIn}/>
                 </div>
             </div>
 
