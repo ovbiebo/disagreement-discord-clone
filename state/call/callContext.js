@@ -1,6 +1,6 @@
 import React, {createContext, useContext, useEffect, useReducer, useRef, useState} from 'react'
 import callReducer from "./callReducer";
-import {socket} from "../../call-service/callConfig";
+import {config, socket} from "../../call-service/callConfig";
 import {addPeerCall, addRemoteStream, joinCall, removePeerCall, removeRemoteStream} from "./callActions";
 import {useUser} from "../userContext";
 import {toast} from "react-toastify";
@@ -210,7 +210,7 @@ export function useCall(channelId) {
             //peer server
             async function createPeer(callerId) {
                 const {default: Peer} = await import('peerjs')
-                return new Peer(callerId)
+                return new Peer(callerId, {config: config})
             }
 
             const peerServer = await createPeer(socketId)
