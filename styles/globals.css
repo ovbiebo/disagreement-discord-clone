@@ -56,3 +56,7 @@ html, body, #__next {
     color: white;
     @apply bg-gray-700
 }
+
+.Toastify__toast {
+    @apply font-sans bg-black
+}
