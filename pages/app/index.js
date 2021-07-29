@@ -31,9 +31,7 @@ function App() {
                                         <ServersList/>
                                     </nav>
                                     <div className={"w-64 bg-gray-800 h-full flex flex-col"}>
-                                        <div className={"flex-1"}>
-                                            <ChannelsList/>
-                                        </div>
+                                        <ChannelsList/>
                                         <CallStatusBar/>
                                         <User/>
                                     </div>

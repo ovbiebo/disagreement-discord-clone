@@ -1,6 +1,12 @@
 import Image from "next/image"
+import {useEffect, useRef} from "react";
 
 function MessagesLoaded({messages}) {
+    const bottomOfMessagesView = useRef(null)
+    useEffect(() => {
+        bottomOfMessagesView.current.scrollIntoView({behavior: 'smooth'})
+    }, [messages])
+    
     return (
         <>
             {messages && messages.map((message) => {
@@ -24,6 +30,7 @@ function MessagesLoaded({messages}) {
                     </div>
                 )
             })}
+            <div ref={bottomOfMessagesView}/>
         </>
     )
 }

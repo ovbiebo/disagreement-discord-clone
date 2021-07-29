@@ -37,7 +37,7 @@ function ChannelsList() {
                         : <div className="animate-pulse h-4 bg-gray-700 rounded-full w-full"/>
                 }
             </div>
-            <div className={"py-4 px-2"}>
+            <div className={"py-4 px-2 flex-1 overflow-y-auto"}>
                 {channelsError && <div>Error fetching channels</div>}
                 {loading && <ChannelsListLoading/>}
                 {channels && <ChannelsListLoaded
