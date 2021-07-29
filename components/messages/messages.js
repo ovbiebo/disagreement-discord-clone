@@ -30,8 +30,8 @@ function Messages() {
                 {
                     currentChannel
                         ? <div className={"flex flex-1 items-center"}>
-                            <HashtagIcon className={"w-6 h-6 mr-1 text-gray-400"}/>
-                            {currentChannel.name}
+                            <HashtagIcon className={"w-6 h-6 mr-1 flex-shrink-0 text-gray-400"}/>
+                            <p className={"truncate"}>{currentChannel.name}</p>
                         </div>
                         : <div className="animate-pulse h-4 bg-gray-600 rounded-full w-full max-w-xl"/>
                 }

@@ -1,6 +1,5 @@
 import {useContext, useEffect} from "react";
 import {serverContext} from "../../state/serverContext";
-import {createChannel} from "../../data-sources/fetchers/channels";
 import {channelContext} from "../../state/channelContext";
 import {ChannelsListLoaded, ChannelsListLoading} from "./channelsListViews";
 import {useChannels} from "../../data-sources/subscribers/channels";
@@ -15,14 +14,6 @@ function ChannelsList() {
     useEffect(() => {
         channels ? setCurrentChannel(channels[0]) : setCurrentChannel(null)
     }, [channels])
-
-    async function addChannel({name, category, isVoiceChannel, serverId}) {
-        try {
-            await createChannel(name, category, isVoiceChannel, serverId)
-        } catch (e) {
-
-        }
-    }
 
     return (
         <>
@@ -40,12 +31,7 @@ function ChannelsList() {
             <div className={"py-4 px-2 flex-1 overflow-y-auto"}>
                 {channelsError && <div>Error fetching channels</div>}
                 {loading && <ChannelsListLoading/>}
-                {channels && <ChannelsListLoaded
-                    channels={channels}
-                    addChannel={
-                        (channelDetails) => addChannel(channelDetails)
-                    }
-                />}
+                {channels && <ChannelsListLoaded channels={channels} server={currentServer}/>}
             </div>
         </>
     )

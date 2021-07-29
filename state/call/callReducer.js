@@ -12,6 +12,7 @@ export default function callReducer(state, action) {
                 ongoingCallId: action.payload.channelId,
                 peerServer: action.payload.peerServer,
                 localStream: action.payload.localStream,
+                breadcrumbs: action.payload.breadcrumbs
             }
         }
         case actions.END_CALL: {

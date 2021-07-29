@@ -9,6 +9,7 @@ const callContext = createContext()
 
 function CallProvider({children}) {
     const callState = {
+        breadcrumbs: null,
         ongoingCallId: null,
         userInfo: null,
         peerServer: null,
@@ -200,7 +201,7 @@ export function useCall(channelId) {
         }
     })
 
-    async function initCall() {
+    async function initCall(serverName, channelName) {
         try {
             if (!user) throw new Error("Can't join voice channel without signing in")
 
@@ -225,7 +226,7 @@ export function useCall(channelId) {
                 const emitted = !state.ongoingCallId && socket.emit('join-call', channelId, callUser)
                 joinedCall.current = emitted && true;
                 setParticipants([])
-                emitted && dispatch(joinCall(channelId, callUser, peerServer, stream))
+                emitted && dispatch(joinCall(channelId, callUser, peerServer, stream, `${serverName}/${channelName}`))
             })
 
         } catch (error) {

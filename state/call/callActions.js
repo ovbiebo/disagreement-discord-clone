@@ -1,9 +1,9 @@
 import * as actions from "../../utils/constants/actions";
 
-export function joinCall(channelId, userInfo, peerServer, localStream) {
+export function joinCall(channelId, userInfo, peerServer, localStream, breadcrumbs) {
     return {
         type: actions.JOIN_CALL,
-        payload: {channelId, userInfo, peerServer, localStream}
+        payload: {channelId, userInfo, peerServer, localStream, breadcrumbs}
     }
 }
 

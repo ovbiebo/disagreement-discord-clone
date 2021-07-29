@@ -2,6 +2,7 @@ import {useUser} from "../../state/userContext";
 import Image from "next/image"
 import {CogIcon} from "@heroicons/react/solid"
 import {ExclamationCircleIcon} from "@heroicons/react/outline"
+import LinkButton from "../common/buttons/link-button";
 
 function User() {
     const {user, loadingUser} = useUser()
@@ -27,12 +28,8 @@ function User() {
             {
                 (!user && !loadingUser)
                 && <div className={"flex"}>
-                    <button className={"bg-gray-800 flex w-full rounded p-1 items-center justify-center mr-1"}>
-                        <p>Sign In</p>
-                    </button>
-                    <button className={"bg-gray-800 flex w-full rounded p-1 items-center justify-center ml-1"}>
-                        <p>Sign Up</p>
-                    </button>
+                    <LinkButton name={"Sign In"} url={"/identity/sign-in"} style={"bg-gray-800 flex w-full rounded p-1 items-center justify-center mr-1"}/>
+                    <LinkButton name={"Sign Up"} url={"/identity/sign-up"} style={"bg-gray-800 flex w-full rounded p-1 items-center justify-center ml-1"}/>
                 </div>
             }
         </div>
