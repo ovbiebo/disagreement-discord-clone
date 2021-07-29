@@ -17,7 +17,7 @@ function Messages() {
 
     function submitMessage(e) {
         e.preventDefault()
-        e.target.message.value && sendMessage(e.target.message.value, currentChannel.id, user.displayName, user.photoURL).then()
+        e.target.message.value && sendMessage(e.target.message.value, currentChannel, user).then()
         e.target.reset();
     }
 

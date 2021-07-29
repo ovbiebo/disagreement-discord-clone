@@ -3,18 +3,18 @@ import callReducer from "./callReducer";
 import {socket} from "../../call-service/callConfig";
 import {addPeerCall, addRemoteStream, joinCall, removePeerCall, removeRemoteStream} from "./callActions";
 import {useUser} from "../userContext";
+import {toast} from "react-toastify";
 
 const callContext = createContext()
 
 function CallProvider({children}) {
     const callState = {
-        breadCrumbs: null,
         ongoingCallId: null,
         userInfo: null,
         peerServer: null,
         peerCalls: {},
         mediaConstraints: {
-            audio: false,
+            audio: true,
             video: true,
         },
         localStream: null,
@@ -202,6 +202,8 @@ export function useCall(channelId) {
 
     async function initCall() {
         try {
+            if (!user) throw new Error("Can't join voice channel without signing in")
+
             //local stream
             let stream = await navigator.mediaDevices.getUserMedia(state.mediaConstraints)
 
@@ -227,7 +229,7 @@ export function useCall(channelId) {
             })
 
         } catch (error) {
-            console.error(error)
+            toast.error(error.message)
         }
     }
 

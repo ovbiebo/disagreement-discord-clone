@@ -11,7 +11,7 @@ import {useUser} from "../../state/userContext";
 const SignInForm = () => {
     const router = useRouter()
     const [signingUp, setSigningUp] = useState(false)
-    const [error, setError] = useState({email: null, password: null})
+    const [errors, setErrors] = useState({email: null, password: null})
     const {setUser} = useUser()
 
     const submitForm = async (e) => {
@@ -24,11 +24,11 @@ const SignInForm = () => {
         } catch (error) {
             setSigningUp(false)
             if (error === 'auth/weak-password') {
-                setError({...error, password: 'The password is too weak.'})
+                setErrors({...errors, password: 'The password is too weak.'})
             } else if (error === 'auth/email-already-in-use') {
-                setError({...error, email: 'Email already in use.'})
+                setErrors({...errors, email: 'Email already in use.'})
             } else {
-                setError(error)
+                setErrors({...errors})
             }
         }
     }
@@ -37,16 +37,16 @@ const SignInForm = () => {
         <form className="mt-4" action="#" method="POST" onSubmit={submitForm}>
             <div className="rounded-md shadow-sm">
                 <div>
-                    <label htmlFor="email-address" className={`text-xs ${!error.email ? "text-gray-400" : "text-red-500"} flex`}>
+                    <label htmlFor="email-address" className={`text-xs ${!errors.email ? "text-gray-400" : "text-red-500"} flex`}>
                         <p className={"font-medium uppercase mr-2"}>Email address</p>
-                        {error.email && <p className={"font-light"}>{`- ${error.email}`}</p>}
+                        {errors.email && <p className={"font-light"}>{`- ${errors.email}`}</p>}
                     </label>
                     <TextField type={"email"} required/>
                 </div>
                 <div className={"mt-2"}>
-                    <label htmlFor="password" className={`text-xs ${!error.password ? "text-gray-400" : "text-red-500"} flex`}>
+                    <label htmlFor="password" className={`text-xs ${!errors.password ? "text-gray-400" : "text-red-500"} flex`}>
                         <p className={"font-medium uppercase mr-2"}>Password</p>
-                        {error.password && <p className={"font-light"}>{`- ${error.password}`}</p>}
+                        {errors.password && <p className={"font-light"}>{`- ${errors.password}`}</p>}
                     </label>
                     <TextField type={"password"} required/>
                 </div>

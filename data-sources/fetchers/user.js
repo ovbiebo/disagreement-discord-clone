@@ -13,6 +13,7 @@ const signIn = async (email, password) => {
 const signUp = async (email, password) => {
     try {
         const fakeUserPhoto = await generateRandomPhoto()
+        // const fakeUsername = "Random name"
         const fakeUsername = await generateRandomName()
         const userCredentials = await firebase
             .auth()
